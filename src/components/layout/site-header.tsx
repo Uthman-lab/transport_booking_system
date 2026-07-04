@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import logoUbbs from "@/assets/logo_ubbs.jpg";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { MobileMenu } from "@/components/layout/mobile-menu";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { buttonClasses } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
@@ -32,24 +33,32 @@ export async function SiteHeader() {
         </Link>
 
         {user ? (
-          <nav className="flex items-center gap-5 text-sm">
-            <Link href="/trips" className="font-medium text-muted transition-colors hover:text-foreground">
-              Trips
-            </Link>
-            <Link href="/my-bookings" className="font-medium text-muted transition-colors hover:text-foreground">
-              My bookings
-            </Link>
-            {isAdmin(user) ? (
-              <Link href="/admin/trips" className="font-medium text-muted transition-colors hover:text-foreground">
-                Admin
+          <>
+            {/* Desktop nav */}
+            <nav className="hidden items-center gap-5 text-sm md:flex">
+              <Link href="/trips" className="font-medium text-muted transition-colors hover:text-foreground">
+                Trips
               </Link>
-            ) : null}
-            <span className="hidden text-muted sm:inline">{user.fullName}</span>
-            <SignOutButton />
-            <ThemeToggle />
-          </nav>
+              <Link href="/my-bookings" className="font-medium text-muted transition-colors hover:text-foreground">
+                My bookings
+              </Link>
+              {isAdmin(user) ? (
+                <Link href="/admin/trips" className="font-medium text-muted transition-colors hover:text-foreground">
+                  Admin
+                </Link>
+              ) : null}
+              <span className="text-muted">{user.fullName}</span>
+              <SignOutButton />
+              <ThemeToggle />
+            </nav>
+            {/* Mobile nav */}
+            <div className="flex items-center gap-2 md:hidden">
+              <ThemeToggle />
+              <MobileMenu admin={isAdmin(user)} fullName={user.fullName} />
+            </div>
+          </>
         ) : (
-          <nav className="flex items-center gap-3 text-sm">
+          <nav className="flex items-center gap-2 text-sm sm:gap-3">
             <Link href="/login" className={buttonClasses("primary", "sm")}>
               Sign in
             </Link>

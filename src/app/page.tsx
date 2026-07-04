@@ -59,7 +59,7 @@ export default async function Home() {
                 </>
               )}
             </div>
-            <dl className="mt-10 flex gap-8">
+            <dl className="mt-10 flex flex-wrap gap-x-8 gap-y-4">
               {[
                 ["Live", "seat availability"],
                 ["Instant", "QR tickets"],
