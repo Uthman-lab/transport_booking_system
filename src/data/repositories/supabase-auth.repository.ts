@@ -2,6 +2,7 @@ import { AuthError, type SupabaseClient } from "@supabase/supabase-js";
 import type { AuthUser } from "@/domain/auth/auth-user.entity";
 import {
   EmailAlreadyRegisteredError,
+  EmailNotConfirmedError,
   InvalidCredentialsError,
   StudentIdTakenError,
   WeakPasswordError,
@@ -10,6 +11,7 @@ import type {
   AuthRepository,
   SignInInput,
   SignUpInput,
+  SignUpResult,
 } from "@/domain/auth/auth.repository";
 import { toAuthUser, type ProfileRow } from "@/data/mappers/auth-user.mapper";
 
@@ -25,7 +27,7 @@ function siteUrl(): string {
 export class SupabaseAuthRepository implements AuthRepository {
   constructor(private readonly supabase: SupabaseClient) {}
 
-  async signUp(input: SignUpInput): Promise<AuthUser> {
+  async signUp(input: SignUpInput): Promise<SignUpResult> {
     const { data, error } = await this.supabase.auth.signUp({
       email: input.email,
       password: input.password,
@@ -47,23 +49,26 @@ export class SupabaseAuthRepository implements AuthRepository {
       throw new Error("Sign up did not return a user.");
     }
 
-    // When a user signs up with an already-registered email and confirmations
-    // are off, Supabase obfuscates the response as a user with no identities
-    // rather than a hard error. Treat that as a duplicate.
+    // When a user signs up with an already-registered email, Supabase
+    // obfuscates the response as a user with no identities rather than a hard
+    // error. Treat that as a duplicate.
     if (user.identities && user.identities.length === 0) {
       throw new EmailAlreadyRegisteredError();
     }
 
-    // Confirmations are off, so a session exists immediately and the trigger
-    // has created the profile with role 'student'. Build the entity from the
-    // known signup input rather than a follow-up read.
+    // If the project requires email confirmation, signUp returns no session;
+    // the trigger has still created the profile with role 'student'. Build the
+    // entity from the known signup input rather than a follow-up read.
     return {
-      id: user.id,
-      email: user.email ?? input.email,
-      fullName: input.fullName,
-      studentId: input.studentId,
-      phone: input.phone ?? null,
-      role: "student",
+      user: {
+        id: user.id,
+        email: user.email ?? input.email,
+        fullName: input.fullName,
+        studentId: input.studentId,
+        phone: input.phone ?? null,
+        role: "student",
+      },
+      needsEmailConfirmation: data.session === null,
     };
   }
 
@@ -74,8 +79,12 @@ export class SupabaseAuthRepository implements AuthRepository {
     });
 
     if (error) {
-      // Any sign-in rejection (bad password, unknown/unconfirmed user) is
-      // surfaced uniformly to avoid leaking which accounts exist.
+      // Distinguish the unconfirmed-email case so the UI can guide the user;
+      // every other rejection is surfaced uniformly to avoid leaking which
+      // accounts exist.
+      if (error.code === "email_not_confirmed") {
+        throw new EmailNotConfirmedError({ cause: error });
+      }
       throw new InvalidCredentialsError({ cause: error });
     }
 

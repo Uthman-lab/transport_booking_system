@@ -20,7 +20,7 @@ const registerInputSchema = z.object({
 });
 
 export type RegisterActionState = {
-  status: "idle" | "error";
+  status: "idle" | "success" | "error";
   message?: string;
 };
 
@@ -53,6 +53,14 @@ export async function registerAction(
     return { status: "error", message: result.error.message };
   }
 
-  // Confirmations are off, so the account is signed in immediately.
+  // If the project requires email confirmation, there is no session yet —
+  // prompt the user to check their inbox. Otherwise they're signed in already.
+  if (result.value.needsEmailConfirmation) {
+    return {
+      status: "success",
+      message: `Almost there! We sent a confirmation link to ${parsed.data.email}. Confirm your email, then sign in.`,
+    };
+  }
+
   redirect("/trips");
 }

@@ -9,6 +9,13 @@ export class InvalidCredentialsError extends Error {
   }
 }
 
+export class EmailNotConfirmedError extends Error {
+  constructor(options?: { cause?: unknown }) {
+    super("Please confirm your email before signing in. Check your inbox for the link.", options);
+    this.name = "EmailNotConfirmedError";
+  }
+}
+
 export class EmailAlreadyRegisteredError extends Error {
   constructor(options?: { cause?: unknown }) {
     super("An account with this email already exists.", options);

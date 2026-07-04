@@ -12,6 +12,23 @@ const fieldClass =
 export function RegisterForm() {
   const [state, formAction, pending] = useActionState(registerAction, initialState);
 
+  if (state.status === "success") {
+    return (
+      <div className="flex w-full max-w-sm flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+        <h1 className="text-xl font-semibold">Check your email</h1>
+        <p role="status" className="text-sm text-zinc-600 dark:text-zinc-300">
+          {state.message}
+        </p>
+        <Link
+          href="/login"
+          className="rounded-md bg-zinc-900 px-4 py-2 text-center text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+        >
+          Go to sign in
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <form
       action={formAction}

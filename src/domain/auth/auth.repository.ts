@@ -8,6 +8,13 @@ export type SignUpInput = {
   phone?: string;
 };
 
+export type SignUpResult = {
+  user: AuthUser;
+  // True when the project requires email confirmation (no session yet), so the
+  // UI can prompt the user to check their inbox instead of entering the app.
+  needsEmailConfirmation: boolean;
+};
+
 export type SignInInput = {
   email: string;
   password: string;
@@ -17,7 +24,7 @@ export type SignInInput = {
 // only on this interface, never on @supabase/*. Implementations are expected
 // to translate provider error codes into the domain errors in auth.errors.ts.
 export interface AuthRepository {
-  signUp(input: SignUpInput): Promise<AuthUser>;
+  signUp(input: SignUpInput): Promise<SignUpResult>;
   signInWithPassword(input: SignInInput): Promise<AuthUser>;
   signOut(): Promise<void>;
   getCurrentUser(): Promise<AuthUser | null>;
