@@ -6,6 +6,7 @@ import {
   changeUserRoleAction,
   deleteUserAction,
   inviteAdminAction,
+  resendInviteAction,
   updateUserDetailsAction,
   type UserActionState,
 } from "@/app/admin/users/actions";
@@ -69,7 +70,7 @@ export function UserList({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-card-border text-left text-muted">
-                <th className="px-4 py-3 font-medium">Name</th>
+                <th className="px-4 py-3 font-medium">User</th>
                 <th className="px-4 py-3 font-medium">Student ID</th>
                 <th className="px-4 py-3 font-medium">Phone</th>
                 <th className="px-4 py-3 font-medium">Role</th>
@@ -110,9 +111,12 @@ function UserRow({
 
   return (
     <tr>
-      <td className="px-4 py-3 font-medium">
-        {user.fullName}
-        {isSelf ? <span className="ml-2 text-xs text-muted">(you)</span> : null}
+      <td className="px-4 py-3">
+        <div className="font-medium">
+          {user.fullName}
+          {isSelf ? <span className="ml-2 text-xs text-muted">(you)</span> : null}
+        </div>
+        {user.email ? <div className="text-xs text-muted">{user.email}</div> : null}
       </td>
       <td className="px-4 py-3 text-muted">{user.studentId ?? "—"}</td>
       <td className="px-4 py-3 text-muted">{user.phone ?? "—"}</td>
@@ -120,6 +124,11 @@ function UserRow({
         <span className="rounded-full border border-card-border px-2.5 py-0.5 text-xs font-medium">
           {ROLE_LABELS[user.role]}
         </span>
+        {user.invitePending ? (
+          <span className="ml-2 rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-400">
+            Invite pending
+          </span>
+        ) : null}
       </td>
       <td className="px-4 py-3">
         {isSelf ? (
@@ -127,13 +136,10 @@ function UserRow({
         ) : manageable ? (
           <div className="flex flex-wrap items-center gap-2">
             <RoleControl user={user} />
-            <button
-              type="button"
-              onClick={() => setEditing(true)}
-              className={buttonClass}
-            >
+            <button type="button" onClick={() => setEditing(true)} className={buttonClass}>
               Edit
             </button>
+            {user.invitePending ? <ResendControl user={user} /> : null}
             <DeleteControl user={user} />
           </div>
         ) : (
@@ -145,10 +151,7 @@ function UserRow({
 }
 
 function RoleControl({ user }: { user: ManagedUser }) {
-  const [state, formAction, pending] = useActionState(
-    changeUserRoleAction,
-    initialState,
-  );
+  const [state, formAction, pending] = useActionState(changeUserRoleAction, initialState);
 
   return (
     <form action={formAction} className="flex items-center gap-1.5">
@@ -172,11 +175,29 @@ function RoleControl({ user }: { user: ManagedUser }) {
   );
 }
 
-function DeleteControl({ user }: { user: ManagedUser }) {
-  const [state, formAction, pending] = useActionState(
-    deleteUserAction,
-    initialState,
+function ResendControl({ user }: { user: ManagedUser }) {
+  const [state, formAction, pending] = useActionState(resendInviteAction, initialState);
+
+  return (
+    <span className="inline-flex flex-wrap items-center gap-2">
+      <form action={formAction}>
+        <input type="hidden" name="userId" value={user.id} />
+        <button type="submit" disabled={pending} className={buttonClass}>
+          {pending ? "Generating…" : "Resend invite"}
+        </button>
+      </form>
+      {state.status === "error" && state.message ? (
+        <span role="alert" className="text-xs text-red-600 dark:text-red-400">
+          {state.message}
+        </span>
+      ) : null}
+      {state.status === "success" && state.link ? <CopyLink link={state.link} /> : null}
+    </span>
   );
+}
+
+function DeleteControl({ user }: { user: ManagedUser }) {
+  const [state, formAction, pending] = useActionState(deleteUserAction, initialState);
   const [confirming, setConfirming] = useState(false);
 
   if (!confirming) {
@@ -202,11 +223,7 @@ function DeleteControl({ user }: { user: ManagedUser }) {
       >
         {pending ? "Deleting…" : "Confirm"}
       </button>
-      <button
-        type="button"
-        onClick={() => setConfirming(false)}
-        className={buttonClass}
-      >
+      <button type="button" onClick={() => setConfirming(false)} className={buttonClass}>
         Cancel
       </button>
       {state.status === "error" && state.message ? (
@@ -219,10 +236,7 @@ function DeleteControl({ user }: { user: ManagedUser }) {
 }
 
 function EditRow({ user, onDone }: { user: ManagedUser; onDone: () => void }) {
-  const [state, formAction, pending] = useActionState(
-    updateUserDetailsAction,
-    initialState,
-  );
+  const [state, formAction, pending] = useActionState(updateUserDetailsAction, initialState);
 
   useEffect(() => {
     if (state.status === "success") onDone();
@@ -235,28 +249,15 @@ function EditRow({ user, onDone }: { user: ManagedUser; onDone: () => void }) {
           <input type="hidden" name="userId" value={user.id} />
           <label className="flex flex-col gap-1 text-xs font-medium text-muted">
             Full name
-            <input
-              name="fullName"
-              defaultValue={user.fullName}
-              required
-              className={inputClass}
-            />
+            <input name="fullName" defaultValue={user.fullName} required className={inputClass} />
           </label>
           <label className="flex flex-col gap-1 text-xs font-medium text-muted">
             Student ID
-            <input
-              name="studentId"
-              defaultValue={user.studentId ?? ""}
-              className={inputClass}
-            />
+            <input name="studentId" defaultValue={user.studentId ?? ""} className={inputClass} />
           </label>
           <label className="flex flex-col gap-1 text-xs font-medium text-muted">
             Phone
-            <input
-              name="phone"
-              defaultValue={user.phone ?? ""}
-              className={inputClass}
-            />
+            <input name="phone" defaultValue={user.phone ?? ""} className={inputClass} />
           </label>
           <button type="submit" disabled={pending} className={buttonClass}>
             {pending ? "Saving…" : "Save"}
@@ -275,11 +276,39 @@ function EditRow({ user, onDone }: { user: ManagedUser; onDone: () => void }) {
   );
 }
 
-function InviteAdminForm({ configured }: { configured: boolean }) {
-  const [state, formAction, pending] = useActionState(
-    inviteAdminAction,
-    initialState,
+function CopyLink({ link }: { link: string }) {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <input
+        readOnly
+        value={link}
+        onFocus={(e) => e.currentTarget.select()}
+        className="w-56 rounded-md border border-input bg-input-bg px-2 py-1 text-xs"
+      />
+      <button
+        type="button"
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(link);
+            setCopied(true);
+            window.setTimeout(() => setCopied(false), 1500);
+          } catch {
+            // Clipboard blocked (e.g. insecure context) — the input is still
+            // selectable for a manual copy.
+          }
+        }}
+        className={buttonClass}
+      >
+        {copied ? "Copied" : "Copy"}
+      </button>
+    </span>
   );
+}
+
+function InviteAdminForm({ configured }: { configured: boolean }) {
+  const [state, formAction, pending] = useActionState(inviteAdminAction, initialState);
 
   return (
     <form
@@ -289,16 +318,17 @@ function InviteAdminForm({ configured }: { configured: boolean }) {
       <div>
         <h3 className="text-base font-semibold">Invite an admin</h3>
         <p className="mt-1 text-sm text-muted">
-          Sends an email invite. The invitee sets a password and joins as an admin
-          in your invite tree.
+          Creates the account and generates a one-time invite link. Copy it and
+          send it to the invitee — they open it, set a password, and join as an
+          admin in your invite tree.
         </p>
       </div>
 
       {!configured ? (
         <p className="rounded-md border border-card-border bg-background px-3 py-2 text-xs text-muted">
-          Email invitations are disabled until <code>SUPABASE_SERVICE_ROLE_KEY</code>{" "}
-          is set on the server. You can still make someone an admin by changing
-          their role in the table below.
+          Invites are disabled until <code>SUPABASE_SERVICE_ROLE_KEY</code> is set
+          on the server. You can still make someone an admin by changing their
+          role in the table below.
         </p>
       ) : null}
 
@@ -309,13 +339,7 @@ function InviteAdminForm({ configured }: { configured: boolean }) {
         </label>
         <label className="flex flex-1 flex-col gap-1 text-sm font-medium">
           Email
-          <input
-            name="email"
-            type="email"
-            required
-            disabled={!configured}
-            className={inputClass}
-          />
+          <input name="email" type="email" required disabled={!configured} className={inputClass} />
         </label>
       </div>
 
@@ -325,9 +349,12 @@ function InviteAdminForm({ configured }: { configured: boolean }) {
         </p>
       ) : null}
       {state.status === "success" && state.message ? (
-        <p role="status" className="text-sm font-medium text-green-700 dark:text-green-400">
-          {state.message}
-        </p>
+        <div className="flex flex-col gap-2">
+          <p role="status" className="text-sm font-medium text-green-700 dark:text-green-400">
+            {state.message}
+          </p>
+          {state.link ? <CopyLink link={state.link} /> : null}
+        </div>
       ) : null}
 
       <button
@@ -335,7 +362,7 @@ function InviteAdminForm({ configured }: { configured: boolean }) {
         disabled={pending || !configured}
         className="self-start rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
       >
-        {pending ? "Sending…" : "Send invite"}
+        {pending ? "Creating…" : "Create invite"}
       </button>
     </form>
   );

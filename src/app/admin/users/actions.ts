@@ -13,12 +13,15 @@ import { getCurrentUser } from "@/use-cases/auth/get-current-user";
 import { changeUserRole } from "@/use-cases/users/change-user-role";
 import { deleteUser } from "@/use-cases/users/delete-user";
 import { inviteAdmin } from "@/use-cases/users/invite-admin";
+import { resendInvite } from "@/use-cases/users/resend-invite";
 import { updateUserDetails } from "@/use-cases/users/update-user-details";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export type UserActionState = {
   status: "idle" | "success" | "error";
   message?: string;
+  // A copyable invite link, set on a successful invite/resend.
+  link?: string;
 };
 
 // Re-authorize admin in every action even though the proxy guards /admin and
@@ -167,10 +170,7 @@ export async function inviteAdminAction(
     };
   }
 
-  const inviteRepository = new SupabaseInviteRepository(
-    createAdminClient(),
-    `${siteUrl()}/auth/confirm?next=/reset-password`,
-  );
+  const inviteRepository = new SupabaseInviteRepository(createAdminClient(), siteUrl());
   const result = await inviteAdmin(
     { inviteRepository },
     {
@@ -184,6 +184,35 @@ export async function inviteAdminAction(
   revalidatePath("/admin/users");
   return {
     status: "success",
-    message: `Invitation sent to ${result.value.email}.`,
+    message: `Invite ready for ${result.value.email}. Copy the link below and send it to them.`,
+    link: result.value.actionLink,
+  };
+}
+
+const resendSchema = z.object({ userId: z.string().uuid() });
+
+export async function resendInviteAction(
+  _prevState: UserActionState,
+  formData: FormData,
+): Promise<UserActionState> {
+  const { user } = await requireAdmin();
+  if (!user) return { status: "error", message: "Not authorized." };
+
+  if (!isAdminClientConfigured()) {
+    return { status: "error", message: "Invites aren't configured on the server." };
+  }
+
+  const parsed = resendSchema.safeParse({ userId: formData.get("userId") });
+  if (!parsed.success) return { status: "error", message: "Invalid request." };
+
+  const inviteRepository = new SupabaseInviteRepository(createAdminClient(), siteUrl());
+  const result = await resendInvite({ inviteRepository }, parsed.data.userId);
+  if (!result.ok) return { status: "error", message: result.error.message };
+
+  revalidatePath("/admin/users");
+  return {
+    status: "success",
+    message: `Fresh invite link for ${result.value.email}:`,
+    link: result.value.actionLink,
   };
 }

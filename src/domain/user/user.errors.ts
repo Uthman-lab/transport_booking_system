@@ -65,7 +65,14 @@ export class AdminAlreadyExistsError extends Error {
 
 export class InviteFailedError extends Error {
   constructor(options?: { cause?: unknown }) {
-    super("Could not send the invitation.", options);
+    super("Could not create the invitation.", options);
     this.name = "InviteFailedError";
+  }
+}
+
+export class InviteAlreadyAcceptedError extends Error {
+  constructor(options?: { cause?: unknown }) {
+    super("This user has already accepted their invite.", options);
+    this.name = "InviteAlreadyAcceptedError";
   }
 }

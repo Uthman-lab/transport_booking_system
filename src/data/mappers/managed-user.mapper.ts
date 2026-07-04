@@ -24,5 +24,8 @@ export function toManagedUser(row: ProfileRow): ManagedUser {
     role: row.role as UserRole,
     invitedBy: row.invited_by,
     createdAt: new Date(row.created_at),
+    // Defaults; the page overlays these from the service-role invite states.
+    email: null,
+    invitePending: false,
   };
 }

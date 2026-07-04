@@ -4,17 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e6367996-abbd-46bd-b7c0-2f8d6ad5c7de" name="Changes" comment="feat: add user role management to admin area&#10;&#10;- Introduced UI for listing users and modifying roles within the admin area.&#10;- Implemented backend use cases for listing users and changing roles with defensive validations.&#10;- Added server actions to ensure only admins can make role changes.&#10;- Integrated real-time revalidation of admin user list after role updates.">
+    <list default="true" id="e6367996-abbd-46bd-b7c0-2f8d6ad5c7de" name="Changes" comment="feat: implement admin user management hierarchy and invitation system&#10;&#10;- Added SQL migration to enforce admin hierarchy with scoped management rules.&#10;- Introduced a service-role client for server-only admin operations requiring RLS bypass.&#10;- Implemented invitation flow for promoting users to admins via email.&#10;- Created use cases for deleting, updating, and inviting users with defensive checks.&#10;- Updated admin UI to support hierarchical user management.&#10;- Enhanced user feedback for invitation, deletion, and update actions.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/admin/users/actions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/admin/users/actions.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/admin/users/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/admin/users/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/admin/user-list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/admin/user-list.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/data/mappers/managed-user.mapper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/mappers/managed-user.mapper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/repositories/supabase-user.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/repositories/supabase-user.repository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/repositories/supabase-invite.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/repositories/supabase-invite.repository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/user/invite.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/user/invite.repository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/domain/user/user.entity.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/user/user.entity.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/domain/user/user.errors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/user/user.errors.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/user/user.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/user/user.repository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/use-cases/users/change-user-role.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/use-cases/users/change-user-role.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +128,7 @@
       <option name="presentableId" value="Default" />
       <updated>1783172984907</updated>
       <workItem from="1783172986293" duration="1599000" />
-      <workItem from="1783174768526" duration="14767000" />
+      <workItem from="1783174768526" duration="16809000" />
     </task>
     <task id="LOCAL-00001" summary="fix: resolve RLS recursion issue, improve email confirmation flow&#10;&#10;- Fixed infinite recursion in RLS policies by introducing `current_user_role()` as a `SECURITY DEFINER` function to avoid self-referential queries.&#10;- Moved `current_user_role()` to an internal schema to restrict API exposure.&#10;- Updated RLS policies to reference the internal role helper.&#10;- Enabled email confirmation in Supabase config to align with updated authentication flow.&#10;- Enhanced user registration feedback and adjusted related repository and use-case logic for email confirmation handling.">
       <option name="closed" value="true" />
@@ -187,7 +186,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783189192111</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="feat: implement admin user management hierarchy and invitation system&#10;&#10;- Added SQL migration to enforce admin hierarchy with scoped management rules.&#10;- Introduced a service-role client for server-only admin operations requiring RLS bypass.&#10;- Implemented invitation flow for promoting users to admins via email.&#10;- Created use cases for deleting, updating, and inviting users with defensive checks.&#10;- Updated admin UI to support hierarchical user management.&#10;- Enhanced user feedback for invitation, deletion, and update actions.">
+      <option name="closed" value="true" />
+      <created>1783194866652</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1783194866652</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -201,6 +208,7 @@
     <MESSAGE value="feat: add admin features for managing trips and routes&#10;&#10;- Implemented create, update, and cancel actions for trips using server actions.&#10;- Introduced UI for listing, editing, and creating trips and routes in the admin area.&#10;- Added defensive checks to ensure only admins can access or perform actions.&#10;- Integrated real-time revalidation for admin routes and trips.&#10;- Enhanced user feedback with status messages for operation success or failure." />
     <MESSAGE value="refactor: relax validation for loop routes in create-route use case&#10;&#10;- Removed restriction preventing origin and destination from being the same.&#10;- Updated validation to only check for non-blank origin and destination values.&#10;- Clarified comments to reflect intent behind updated validation logic." />
     <MESSAGE value="feat: add user role management to admin area&#10;&#10;- Introduced UI for listing users and modifying roles within the admin area.&#10;- Implemented backend use cases for listing users and changing roles with defensive validations.&#10;- Added server actions to ensure only admins can make role changes.&#10;- Integrated real-time revalidation of admin user list after role updates." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add user role management to admin area&#10;&#10;- Introduced UI for listing users and modifying roles within the admin area.&#10;- Implemented backend use cases for listing users and changing roles with defensive validations.&#10;- Added server actions to ensure only admins can make role changes.&#10;- Integrated real-time revalidation of admin user list after role updates." />
+    <MESSAGE value="feat: implement admin user management hierarchy and invitation system&#10;&#10;- Added SQL migration to enforce admin hierarchy with scoped management rules.&#10;- Introduced a service-role client for server-only admin operations requiring RLS bypass.&#10;- Implemented invitation flow for promoting users to admins via email.&#10;- Created use cases for deleting, updating, and inviting users with defensive checks.&#10;- Updated admin UI to support hierarchical user management.&#10;- Enhanced user feedback for invitation, deletion, and update actions." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: implement admin user management hierarchy and invitation system&#10;&#10;- Added SQL migration to enforce admin hierarchy with scoped management rules.&#10;- Introduced a service-role client for server-only admin operations requiring RLS bypass.&#10;- Implemented invitation flow for promoting users to admins via email.&#10;- Created use cases for deleting, updating, and inviting users with defensive checks.&#10;- Updated admin UI to support hierarchical user management.&#10;- Enhanced user feedback for invitation, deletion, and update actions." />
   </component>
 </project>

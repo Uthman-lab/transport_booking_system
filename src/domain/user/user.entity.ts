@@ -13,6 +13,12 @@ export type ManagedUser = {
   // Null for self-registered students and bootstrap/root admins.
   invitedBy: string | null;
   createdAt: Date;
+  // Enriched from auth.users via the service-role client (null/false when the
+  // service role isn't configured, since profiles alone don't carry these).
+  email: string | null;
+  // True when this user was invited by email but hasn't accepted yet
+  // (invited_at set, email not confirmed). Drives the "Resend invite" button.
+  invitePending: boolean;
 };
 
 // Editable profile fields an admin may change on another user.
