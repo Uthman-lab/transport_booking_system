@@ -9,7 +9,7 @@ import {
 const initialState: ResetPasswordActionState = { status: "idle" };
 
 const fieldClass =
-  "rounded-md border border-zinc-300 px-3 py-2 text-base font-normal outline-none focus:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-900";
+  "rounded-md border border-input bg-input-bg px-3 py-2 text-base font-normal outline-none focus:border-ring";
 
 export function ResetPasswordForm() {
   const [state, formAction, pending] = useActionState(resetPasswordAction, initialState);
@@ -17,11 +17,11 @@ export function ResetPasswordForm() {
   return (
     <form
       action={formAction}
-      className="flex w-full max-w-sm flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+      className="flex w-full max-w-sm flex-col gap-4 rounded-xl border border-card-border bg-card p-8 shadow-sm"
     >
       <div className="flex flex-col gap-1">
         <h1 className="text-xl font-semibold">Set a new password</h1>
-        <p className="text-sm text-zinc-500">Choose a password you haven&apos;t used before.</p>
+        <p className="text-sm text-muted">Choose a password you haven&apos;t used before.</p>
       </div>
 
       <label className="flex flex-col gap-1 text-sm font-medium">
@@ -57,7 +57,7 @@ export function ResetPasswordForm() {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
       >
         {pending ? "Updating…" : "Update password"}
       </button>

@@ -3,6 +3,7 @@ import type { AuthUser } from "@/domain/auth/auth-user.entity";
 import {
   EmailAlreadyRegisteredError,
   EmailNotConfirmedError,
+  EmailRateLimitError,
   InvalidCredentialsError,
   StudentIdTakenError,
   WeakPasswordError,
@@ -115,7 +116,12 @@ export class SupabaseAuthRepository implements AuthRepository {
     const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${siteUrl()}/auth/confirm?next=/reset-password`,
     });
-    if (error) throw error;
+    if (error) {
+      if (error.status === 429 || error.code === "over_email_send_rate_limit") {
+        throw new EmailRateLimitError({ cause: error });
+      }
+      throw error;
+    }
   }
 
   async updatePassword(newPassword: string): Promise<void> {

@@ -15,11 +15,11 @@ export function ForgotPasswordForm() {
   return (
     <form
       action={formAction}
-      className="flex w-full max-w-sm flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+      className="flex w-full max-w-sm flex-col gap-4 rounded-xl border border-card-border bg-card p-8 shadow-sm"
     >
       <div className="flex flex-col gap-1">
         <h1 className="text-xl font-semibold">Reset your password</h1>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-muted">
           Enter your email and we&apos;ll send you a reset link.
         </p>
       </div>
@@ -31,7 +31,7 @@ export function ForgotPasswordForm() {
           type="email"
           autoComplete="email"
           required
-          className="rounded-md border border-zinc-300 px-3 py-2 text-base font-normal outline-none focus:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-900"
+          className="rounded-md border border-input bg-input-bg px-3 py-2 text-base font-normal outline-none focus:border-ring"
         />
       </label>
 
@@ -50,14 +50,14 @@ export function ForgotPasswordForm() {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
       >
         {pending ? "Sending…" : "Send reset link"}
       </button>
 
-      <span className="text-sm text-zinc-500">
+      <span className="text-sm text-muted">
         Remembered it?{" "}
-        <Link href="/login" className="font-medium text-zinc-900 underline dark:text-zinc-100">
+        <Link href="/login" className="font-medium text-link underline">
           Sign in
         </Link>
       </span>

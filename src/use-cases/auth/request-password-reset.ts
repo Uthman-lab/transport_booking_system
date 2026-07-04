@@ -1,3 +1,4 @@
+import { EmailRateLimitError } from "@/domain/auth/auth.errors";
 import type { AuthRepository } from "@/domain/auth/auth.repository";
 import { err, ok, type Result } from "@/domain/shared/result";
 
@@ -15,6 +16,11 @@ export async function requestPasswordReset(
     await authRepository.requestPasswordReset(email);
     return ok(undefined);
   } catch (cause) {
+    // Rate limiting isn't account-specific, so surfacing it is safe and helps
+    // the user understand they should wait rather than retry immediately.
+    if (cause instanceof EmailRateLimitError) {
+      return err(cause);
+    }
     return err(new Error("Could not send the reset link. Try again.", { cause }));
   }
 }

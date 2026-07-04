@@ -36,3 +36,10 @@ export class WeakPasswordError extends Error {
     this.name = "WeakPasswordError";
   }
 }
+
+export class EmailRateLimitError extends Error {
+  constructor(options?: { cause?: unknown }) {
+    super("Too many emails sent recently. Please wait a few minutes and try again.", options);
+    this.name = "EmailRateLimitError";
+  }
+}

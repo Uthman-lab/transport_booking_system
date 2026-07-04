@@ -5,21 +5,21 @@ import { availableSeats, type Trip } from "@/domain/trip/trip.entity";
 export function TripList({ trips }: { trips: Trip[] }) {
   if (trips.length === 0) {
     return (
-      <p className="mt-6 text-zinc-500">
+      <p className="mt-6 text-muted">
         No upcoming trips are open for booking right now.
       </p>
     );
   }
 
   return (
-    <ul className="mt-6 divide-y divide-zinc-200 dark:divide-zinc-800">
+    <ul className="mt-6 divide-y divide-card-border">
       {trips.map((trip) => (
         <li key={trip.id} className="flex items-center justify-between py-4">
           <div>
             <p className="font-medium">
               {trip.origin} → {trip.destination}
             </p>
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-muted">
               {trip.departureAt.toLocaleString()} · {availableSeats(trip)} seats left
             </p>
           </div>
