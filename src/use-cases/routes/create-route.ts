@@ -13,11 +13,11 @@ export async function createRoute(
   const origin = input.origin.trim();
   const destination = input.destination.trim();
 
+  // Only guard against blank endpoints — a route needs both. Anything else
+  // (including loop routes where origin === destination) is allowed: admins can
+  // add whatever routes they want.
   if (!origin || !destination) {
     return err(new Error("Origin and destination are required."));
-  }
-  if (origin.toLowerCase() === destination.toLowerCase()) {
-    return err(new Error("Origin and destination must be different."));
   }
 
   try {
