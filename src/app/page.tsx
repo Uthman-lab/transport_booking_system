@@ -30,7 +30,7 @@ export default async function Home() {
   return (
     <main className="flex-1">
       {/* Hero */}
-      <section className="bg-surface">
+      <section>
         <Container className="grid items-center gap-10 py-16 md:grid-cols-2 md:py-24">
           <div>
             <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
@@ -103,7 +103,7 @@ export default async function Home() {
       </section>
 
       {/* How it works */}
-      <section className="bg-surface py-16">
+      <section className="border-y border-card-border bg-surface/60 py-16 backdrop-blur-sm">
         <Container>
           <h2 className="text-2xl font-semibold tracking-tight">How it works</h2>
           <ol className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

@@ -4,19 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e6367996-abbd-46bd-b7c0-2f8d6ad5c7de" name="Changes" comment="feat: enhance invite system and admin user management&#10;&#10;- Added use cases for listing and resending admin invitations.&#10;- Updated invite flow to generate copyable invitation links instead of sending emails directly.&#10;- Enriched admin UI with email and invite status overlays.&#10;- Improved invite error handling with specific errors for failed or accepted invites.&#10;- Introduced &quot;Resend invite&quot; functionality for pending invitations.">
+    <list default="true" id="e6367996-abbd-46bd-b7c0-2f8d6ad5c7de" name="Changes" comment="feat: introduce reusable UI components and improve trip management&#10;&#10;- Added reusable components: Badge, Button, Card, and Container for consistent UI.&#10;- Updated trip list to display imagery, badges, and interactive cards.&#10;- Enhanced admin user management with hierarchical invite roles.&#10;- Refactored &quot;invite&quot; functionality to support custom roles and reusable logic.&#10;- Improved user table with clearer role, status, and management options.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/admin/users/actions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/admin/users/actions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/admin/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/admin/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/admin/routes/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/admin/routes/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/admin/trips/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/admin/trips/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/trips/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/trips/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/admin/user-list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/admin/user-list.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/layout/site-header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/site-header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/trips/trip-list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/trips/trip-list.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/repositories/supabase-invite.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/repositories/supabase-invite.repository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/supabase/proxy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/supabase/proxy.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/user/invite.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/user/invite.repository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/use-cases/users/invite-admin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/use-cases/users/invite-user.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/admin/admin-trip-list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/admin/admin-trip-list.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,7 +127,7 @@
       <option name="presentableId" value="Default" />
       <updated>1783172984907</updated>
       <workItem from="1783172986293" duration="1599000" />
-      <workItem from="1783174768526" duration="20248000" />
+      <workItem from="1783174768526" duration="21475000" />
     </task>
     <task id="LOCAL-00001" summary="fix: resolve RLS recursion issue, improve email confirmation flow&#10;&#10;- Fixed infinite recursion in RLS policies by introducing `current_user_role()` as a `SECURITY DEFINER` function to avoid self-referential queries.&#10;- Moved `current_user_role()` to an internal schema to restrict API exposure.&#10;- Updated RLS policies to reference the internal role helper.&#10;- Enabled email confirmation in Supabase config to align with updated authentication flow.&#10;- Enhanced user registration feedback and adjusted related repository and use-case logic for email confirmation handling.">
       <option name="closed" value="true" />
@@ -205,7 +201,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783197140294</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="feat: introduce reusable UI components and improve trip management&#10;&#10;- Added reusable components: Badge, Button, Card, and Container for consistent UI.&#10;- Updated trip list to display imagery, badges, and interactive cards.&#10;- Enhanced admin user management with hierarchical invite roles.&#10;- Refactored &quot;invite&quot; functionality to support custom roles and reusable logic.&#10;- Improved user table with clearer role, status, and management options.">
+      <option name="closed" value="true" />
+      <created>1783200977534</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1783200977534</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -222,6 +226,7 @@
     <MESSAGE value="feat: implement admin user management hierarchy and invitation system&#10;&#10;- Added SQL migration to enforce admin hierarchy with scoped management rules.&#10;- Introduced a service-role client for server-only admin operations requiring RLS bypass.&#10;- Implemented invitation flow for promoting users to admins via email.&#10;- Created use cases for deleting, updating, and inviting users with defensive checks.&#10;- Updated admin UI to support hierarchical user management.&#10;- Enhanced user feedback for invitation, deletion, and update actions." />
     <MESSAGE value="feat: enhance admin invitation and user management system&#10;&#10;- Added use cases for listing and resending admin invitations.&#10;- Enriched user data with email and invite status for the admin user page.&#10;- Updated `SupabaseInviteRepository` to support invite state retrieval and link generation.&#10;- Improved invite handling with new error types for accepted or failed invites.&#10;- Refined admin user list with real-time invite status and email overlays." />
     <MESSAGE value="feat: enhance invite system and admin user management&#10;&#10;- Added use cases for listing and resending admin invitations.&#10;- Updated invite flow to generate copyable invitation links instead of sending emails directly.&#10;- Enriched admin UI with email and invite status overlays.&#10;- Improved invite error handling with specific errors for failed or accepted invites.&#10;- Introduced &quot;Resend invite&quot; functionality for pending invitations." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: enhance invite system and admin user management&#10;&#10;- Added use cases for listing and resending admin invitations.&#10;- Updated invite flow to generate copyable invitation links instead of sending emails directly.&#10;- Enriched admin UI with email and invite status overlays.&#10;- Improved invite error handling with specific errors for failed or accepted invites.&#10;- Introduced &quot;Resend invite&quot; functionality for pending invitations." />
+    <MESSAGE value="feat: introduce reusable UI components and improve trip management&#10;&#10;- Added reusable components: Badge, Button, Card, and Container for consistent UI.&#10;- Updated trip list to display imagery, badges, and interactive cards.&#10;- Enhanced admin user management with hierarchical invite roles.&#10;- Refactored &quot;invite&quot; functionality to support custom roles and reusable logic.&#10;- Improved user table with clearer role, status, and management options." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: introduce reusable UI components and improve trip management&#10;&#10;- Added reusable components: Badge, Button, Card, and Container for consistent UI.&#10;- Updated trip list to display imagery, badges, and interactive cards.&#10;- Enhanced admin user management with hierarchical invite roles.&#10;- Refactored &quot;invite&quot; functionality to support custom roles and reusable logic.&#10;- Improved user table with clearer role, status, and management options." />
   </component>
 </project>

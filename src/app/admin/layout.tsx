@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AdminNav } from "@/components/admin/admin-nav";
+import { Container } from "@/components/ui/container";
 import { SupabaseAuthRepository } from "@/data/repositories/supabase-auth.repository";
 import { createClient } from "@/data/supabase/server";
 import { isAdmin } from "@/domain/auth/auth-user.entity";
@@ -21,22 +22,17 @@ export default async function AdminLayout({
   if (!isAdmin(user)) redirect("/trips");
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-12">
-      <div className="flex items-center justify-between border-b border-card-border pb-4">
-        <h1 className="text-2xl font-semibold">Admin</h1>
-        <nav className="flex items-center gap-4 text-sm">
-          <Link href="/admin/trips" className="font-medium hover:underline">
-            Trips
-          </Link>
-          <Link href="/admin/routes" className="font-medium hover:underline">
-            Routes
-          </Link>
-          <Link href="/admin/users" className="font-medium hover:underline">
-            Users
-          </Link>
-        </nav>
-      </div>
-      {children}
-    </div>
+    <main className="flex-1 py-10">
+      <Container>
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-semibold tracking-tight">Admin console</h1>
+            <p className="mt-1 text-muted">Manage trips, routes, and users.</p>
+          </div>
+          <AdminNav />
+        </div>
+        <div className="mt-8">{children}</div>
+      </Container>
+    </main>
   );
 }

@@ -13,7 +13,7 @@ export default async function TripsPage() {
   const trips = await listAvailableTrips({ tripRepository });
 
   return (
-    <main className="flex-1 bg-surface py-12">
+    <main className="flex-1 py-12">
       <Container>
         <h1 className="text-3xl font-semibold tracking-tight">Upcoming trips</h1>
         <p className="mt-2 text-muted">
