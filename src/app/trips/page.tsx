@@ -1,3 +1,4 @@
+import { Container } from "@/components/ui/container";
 import { TripList } from "@/components/trips/trip-list";
 import { SupabaseTripRepository } from "@/data/repositories/supabase-trip.repository";
 import { createClient } from "@/data/supabase/server";
@@ -12,9 +13,14 @@ export default async function TripsPage() {
   const trips = await listAvailableTrips({ tripRepository });
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
-      <h1 className="text-2xl font-semibold">Upcoming trips</h1>
-      <TripList trips={trips} />
+    <main className="flex-1 bg-surface py-12">
+      <Container>
+        <h1 className="text-3xl font-semibold tracking-tight">Upcoming trips</h1>
+        <p className="mt-2 text-muted">
+          Reserve your seat for the next campus departure.
+        </p>
+        <TripList trips={trips} />
+      </Container>
     </main>
   );
 }

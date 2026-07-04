@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useActionState } from "react";
 import {
   changeUserRoleAction,
   deleteUserAction,
-  inviteAdminAction,
+  inviteUserAction,
   resendInviteAction,
   updateUserDetailsAction,
   type UserActionState,
@@ -25,11 +25,11 @@ const inputClass =
   "rounded-md border border-input bg-input-bg px-2 py-1.5 text-sm outline-none focus:border-ring";
 const buttonClass =
   "rounded-md border border-card-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-background disabled:opacity-60";
+const chip = "inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium";
 
 // Mirrors internal.can_manage_user for UI gating: never self; any admin manages
 // non-admins; an admin target is manageable only if the current admin is an
-// ancestor in the invite tree. The DB enforces this regardless — this just
-// avoids showing controls that would fail.
+// ancestor in the invite tree. The DB enforces this regardless.
 function isManageable(
   target: ManagedUser,
   currentUserId: string,
@@ -61,7 +61,7 @@ export function UserList({
 
   return (
     <div className="mt-6 flex flex-col gap-8">
-      <InviteAdminForm configured={inviteConfigured} />
+      <InviteUserForm configured={inviteConfigured} />
 
       {users.length === 0 ? (
         <p className="text-muted">No users yet.</p>
@@ -71,10 +71,9 @@ export function UserList({
             <thead>
               <tr className="border-b border-card-border text-left text-muted">
                 <th className="px-4 py-3 font-medium">User</th>
-                <th className="px-4 py-3 font-medium">Student ID</th>
-                <th className="px-4 py-3 font-medium">Phone</th>
                 <th className="px-4 py-3 font-medium">Role</th>
-                <th className="px-4 py-3 font-medium">Actions</th>
+                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium text-right">Manage</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-card-border">
@@ -103,50 +102,143 @@ function UserRow({
   isSelf: boolean;
   manageable: boolean;
 }) {
-  const [editing, setEditing] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  if (editing) {
-    return <EditRow user={user} onDone={() => setEditing(false)} />;
-  }
+  const meta = [user.studentId, user.phone].filter(Boolean).join(" · ");
 
   return (
-    <tr>
-      <td className="px-4 py-3">
-        <div className="font-medium">
-          {user.fullName}
-          {isSelf ? <span className="ml-2 text-xs text-muted">(you)</span> : null}
-        </div>
-        {user.email ? <div className="text-xs text-muted">{user.email}</div> : null}
-      </td>
-      <td className="px-4 py-3 text-muted">{user.studentId ?? "—"}</td>
-      <td className="px-4 py-3 text-muted">{user.phone ?? "—"}</td>
-      <td className="px-4 py-3">
-        <span className="rounded-full border border-card-border px-2.5 py-0.5 text-xs font-medium">
-          {ROLE_LABELS[user.role]}
-        </span>
-        {user.invitePending ? (
-          <span className="ml-2 rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-400">
-            Invite pending
+    <>
+      <tr className={open ? "bg-background/40" : undefined}>
+        <td className="px-4 py-3 align-top">
+          <div className="font-medium">
+            {user.fullName}
+            {isSelf ? <span className="ml-2 text-xs text-muted">(you)</span> : null}
+          </div>
+          {user.email ? <div className="text-xs text-muted">{user.email}</div> : null}
+          {meta ? <div className="text-xs text-muted">{meta}</div> : null}
+        </td>
+        <td className="px-4 py-3 align-top">
+          <span className={`${chip} border border-card-border`}>{ROLE_LABELS[user.role]}</span>
+        </td>
+        <td className="px-4 py-3 align-top">
+          <StatusChip user={user} />
+        </td>
+        <td className="px-4 py-3 align-top text-right">
+          {isSelf ? (
+            <span className="text-xs text-muted">—</span>
+          ) : manageable ? (
+            <button
+              type="button"
+              onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}
+              className={buttonClass}
+            >
+              {open ? "Close" : "Manage"}
+            </button>
+          ) : (
+            <span className="text-xs text-muted">Not in your tree</span>
+          )}
+        </td>
+      </tr>
+
+      {open && manageable ? (
+        <tr className="bg-background/40">
+          <td colSpan={4} className="px-4 pb-5 pt-1">
+            <ManagePanel user={user} />
+          </td>
+        </tr>
+      ) : null}
+    </>
+  );
+}
+
+function StatusChip({ user }: { user: ManagedUser }) {
+  if (user.invitePending) {
+    return (
+      <span className={`${chip} border border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-400`}>
+        Invite pending
+      </span>
+    );
+  }
+  if (user.email) {
+    return (
+      <span className={`${chip} border border-green-300 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-400`}>
+        Active
+      </span>
+    );
+  }
+  return <span className="text-xs text-muted">—</span>;
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <h4 className="text-xs font-semibold uppercase tracking-wide text-muted">{title}</h4>
+      {children}
+    </div>
+  );
+}
+
+function ManagePanel({ user }: { user: ManagedUser }) {
+  return (
+    <div className="grid gap-6 rounded-lg border border-card-border bg-card p-4 sm:grid-cols-2">
+      <Section title="Details">
+        <DetailsForm user={user} />
+      </Section>
+
+      <Section title="Role">
+        <RoleControl user={user} />
+      </Section>
+
+      {user.invitePending ? (
+        <Section title="Pending invite">
+          <ResendControl user={user} />
+        </Section>
+      ) : null}
+
+      <Section title="Danger zone">
+        <DeleteControl user={user} />
+      </Section>
+    </div>
+  );
+}
+
+function DetailsForm({ user }: { user: ManagedUser }) {
+  const [state, formAction, pending] = useActionState(updateUserDetailsAction, initialState);
+
+  return (
+    <form action={formAction} className="flex flex-col gap-3">
+      <input type="hidden" name="userId" value={user.id} />
+      <div className="flex flex-wrap gap-3">
+        <label className="flex flex-1 flex-col gap-1 text-xs font-medium text-muted">
+          Full name
+          <input name="fullName" defaultValue={user.fullName} required className={inputClass} />
+        </label>
+        <label className="flex flex-1 flex-col gap-1 text-xs font-medium text-muted">
+          Student ID
+          <input name="studentId" defaultValue={user.studentId ?? ""} className={inputClass} />
+        </label>
+        <label className="flex flex-1 flex-col gap-1 text-xs font-medium text-muted">
+          Phone
+          <input name="phone" defaultValue={user.phone ?? ""} className={inputClass} />
+        </label>
+      </div>
+      <div className="flex items-center gap-2">
+        <button type="submit" disabled={pending} className={buttonClass}>
+          {pending ? "Saving…" : "Save details"}
+        </button>
+        {state.status === "error" && state.message ? (
+          <span role="alert" className="text-xs text-red-600 dark:text-red-400">
+            {state.message}
           </span>
         ) : null}
-      </td>
-      <td className="px-4 py-3">
-        {isSelf ? (
-          <span className="text-xs text-muted">Ask another admin</span>
-        ) : manageable ? (
-          <div className="flex flex-wrap items-center gap-2">
-            <RoleControl user={user} />
-            <button type="button" onClick={() => setEditing(true)} className={buttonClass}>
-              Edit
-            </button>
-            {user.invitePending ? <ResendControl user={user} /> : null}
-            <DeleteControl user={user} />
-          </div>
-        ) : (
-          <span className="text-xs text-muted">Not in your invite tree</span>
-        )}
-      </td>
-    </tr>
+        {state.status === "success" && state.message ? (
+          <span role="status" className="text-xs font-medium text-green-700 dark:text-green-400">
+            {state.message}
+          </span>
+        ) : null}
+      </div>
+    </form>
   );
 }
 
@@ -154,7 +246,7 @@ function RoleControl({ user }: { user: ManagedUser }) {
   const [state, formAction, pending] = useActionState(changeUserRoleAction, initialState);
 
   return (
-    <form action={formAction} className="flex items-center gap-1.5">
+    <form action={formAction} className="flex flex-wrap items-center gap-2">
       <input type="hidden" name="userId" value={user.id} />
       <select name="role" defaultValue={user.role} className={inputClass}>
         {USER_ROLES.map((role) => (
@@ -171,6 +263,11 @@ function RoleControl({ user }: { user: ManagedUser }) {
           {state.message}
         </span>
       ) : null}
+      {state.status === "success" && state.message ? (
+        <span role="status" className="text-xs font-medium text-green-700 dark:text-green-400">
+          {state.message}
+        </span>
+      ) : null}
     </form>
   );
 }
@@ -179,7 +276,10 @@ function ResendControl({ user }: { user: ManagedUser }) {
   const [state, formAction, pending] = useActionState(resendInviteAction, initialState);
 
   return (
-    <span className="inline-flex flex-wrap items-center gap-2">
+    <div className="flex flex-col gap-2">
+      <p className="text-xs text-muted">
+        Generate a fresh invite link and send it to the invitee.
+      </p>
       <form action={formAction}>
         <input type="hidden" name="userId" value={user.id} />
         <button type="submit" disabled={pending} className={buttonClass}>
@@ -192,7 +292,7 @@ function ResendControl({ user }: { user: ManagedUser }) {
         </span>
       ) : null}
       {state.status === "success" && state.link ? <CopyLink link={state.link} /> : null}
-    </span>
+    </div>
   );
 }
 
@@ -202,18 +302,23 @@ function DeleteControl({ user }: { user: ManagedUser }) {
 
   if (!confirming) {
     return (
-      <button
-        type="button"
-        onClick={() => setConfirming(true)}
-        className="rounded-md border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
-      >
-        Delete
-      </button>
+      <div className="flex flex-col gap-2">
+        <p className="text-xs text-muted">
+          Permanently removes the account and all their bookings. This can&apos;t be undone.
+        </p>
+        <button
+          type="button"
+          onClick={() => setConfirming(true)}
+          className="self-start rounded-md border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
+        >
+          Delete user
+        </button>
+      </div>
     );
   }
 
   return (
-    <form action={formAction} className="flex items-center gap-1.5">
+    <form action={formAction} className="flex flex-wrap items-center gap-2">
       <input type="hidden" name="userId" value={user.id} />
       <span className="text-xs text-muted">Delete {user.fullName}?</span>
       <button
@@ -221,7 +326,7 @@ function DeleteControl({ user }: { user: ManagedUser }) {
         disabled={pending}
         className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-60"
       >
-        {pending ? "Deleting…" : "Confirm"}
+        {pending ? "Deleting…" : "Yes, delete"}
       </button>
       <button type="button" onClick={() => setConfirming(false)} className={buttonClass}>
         Cancel
@@ -235,47 +340,6 @@ function DeleteControl({ user }: { user: ManagedUser }) {
   );
 }
 
-function EditRow({ user, onDone }: { user: ManagedUser; onDone: () => void }) {
-  const [state, formAction, pending] = useActionState(updateUserDetailsAction, initialState);
-
-  useEffect(() => {
-    if (state.status === "success") onDone();
-  }, [state.status, onDone]);
-
-  return (
-    <tr className="bg-background/40">
-      <td colSpan={5} className="px-4 py-3">
-        <form action={formAction} className="flex flex-wrap items-end gap-3">
-          <input type="hidden" name="userId" value={user.id} />
-          <label className="flex flex-col gap-1 text-xs font-medium text-muted">
-            Full name
-            <input name="fullName" defaultValue={user.fullName} required className={inputClass} />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-medium text-muted">
-            Student ID
-            <input name="studentId" defaultValue={user.studentId ?? ""} className={inputClass} />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-medium text-muted">
-            Phone
-            <input name="phone" defaultValue={user.phone ?? ""} className={inputClass} />
-          </label>
-          <button type="submit" disabled={pending} className={buttonClass}>
-            {pending ? "Saving…" : "Save"}
-          </button>
-          <button type="button" onClick={onDone} className={buttonClass}>
-            Cancel
-          </button>
-          {state.status === "error" && state.message ? (
-            <span role="alert" className="text-xs text-red-600 dark:text-red-400">
-              {state.message}
-            </span>
-          ) : null}
-        </form>
-      </td>
-    </tr>
-  );
-}
-
 function CopyLink({ link }: { link: string }) {
   const [copied, setCopied] = useState(false);
 
@@ -285,7 +349,7 @@ function CopyLink({ link }: { link: string }) {
         readOnly
         value={link}
         onFocus={(e) => e.currentTarget.select()}
-        className="w-56 rounded-md border border-input bg-input-bg px-2 py-1 text-xs"
+        className="w-64 rounded-md border border-input bg-input-bg px-2 py-1 text-xs"
       />
       <button
         type="button"
@@ -295,7 +359,7 @@ function CopyLink({ link }: { link: string }) {
             setCopied(true);
             window.setTimeout(() => setCopied(false), 1500);
           } catch {
-            // Clipboard blocked (e.g. insecure context) — the input is still
+            // Clipboard blocked (e.g. insecure context) — the field is still
             // selectable for a manual copy.
           }
         }}
@@ -307,8 +371,8 @@ function CopyLink({ link }: { link: string }) {
   );
 }
 
-function InviteAdminForm({ configured }: { configured: boolean }) {
-  const [state, formAction, pending] = useActionState(inviteAdminAction, initialState);
+function InviteUserForm({ configured }: { configured: boolean }) {
+  const [state, formAction, pending] = useActionState(inviteUserAction, initialState);
 
   return (
     <form
@@ -316,19 +380,18 @@ function InviteAdminForm({ configured }: { configured: boolean }) {
       className="flex w-full max-w-2xl flex-col gap-4 rounded-xl border border-card-border bg-card p-6"
     >
       <div>
-        <h3 className="text-base font-semibold">Invite an admin</h3>
+        <h3 className="text-base font-semibold">Invite a user</h3>
         <p className="mt-1 text-sm text-muted">
-          Creates the account and generates a one-time invite link. Copy it and
-          send it to the invitee — they open it, set a password, and join as an
-          admin in your invite tree.
+          Creates the account with the role you choose and generates a one-time
+          invite link. Copy it and send it to the invitee — they open it, set a
+          password, and join. An invited admin lands in your invite tree.
         </p>
       </div>
 
       {!configured ? (
         <p className="rounded-md border border-card-border bg-background px-3 py-2 text-xs text-muted">
           Invites are disabled until <code>SUPABASE_SERVICE_ROLE_KEY</code> is set
-          on the server. You can still make someone an admin by changing their
-          role in the table below.
+          on the server. You can still change a user&apos;s role in the table below.
         </p>
       ) : null}
 
@@ -340,6 +403,16 @@ function InviteAdminForm({ configured }: { configured: boolean }) {
         <label className="flex flex-1 flex-col gap-1 text-sm font-medium">
           Email
           <input name="email" type="email" required disabled={!configured} className={inputClass} />
+        </label>
+        <label className="flex flex-col gap-1 text-sm font-medium">
+          Role
+          <select name="role" defaultValue="admin" disabled={!configured} className={inputClass}>
+            {USER_ROLES.map((role) => (
+              <option key={role} value={role}>
+                {ROLE_LABELS[role]}
+              </option>
+            ))}
+          </select>
         </label>
       </div>
 

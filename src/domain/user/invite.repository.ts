@@ -1,18 +1,23 @@
-// Port for admin invitations. Implemented in the data layer with a service-role
+import type { UserRole } from "@/domain/auth/auth-user.entity";
+
+// Port for user invitations. Implemented in the data layer with a service-role
 // client — the only way to create an auth user, read invite state, and mint
 // invite links — so it's a separate port from the RLS-bound UserRepository.
-export type InviteAdminInput = {
+export type InviteByEmailInput = {
   email: string;
   fullName: string;
-  // The acting admin, recorded as the new admin's inviter (invited_by).
+  // The role the invitee joins as (student / staff / admin).
+  role: UserRole;
+  // The acting admin, recorded as the invitee's inviter (invited_by).
   invitedBy: string;
 };
 
 // An invite link the admin can copy/share. Uses the token_hash flow that
 // /auth/confirm understands, so it works regardless of email-template config.
-export type InvitedAdmin = {
+export type InvitedUser = {
   id: string;
   email: string;
+  role: UserRole;
   actionLink: string;
 };
 
@@ -30,7 +35,7 @@ export type ResendResult = {
 };
 
 export interface InviteRepository {
-  inviteAdminByEmail(input: InviteAdminInput): Promise<InvitedAdmin>;
+  inviteByEmail(input: InviteByEmailInput): Promise<InvitedUser>;
   listInviteStates(): Promise<InviteState[]>;
   resendInvite(userId: string): Promise<ResendResult>;
 }

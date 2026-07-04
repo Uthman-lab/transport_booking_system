@@ -1,27 +1,29 @@
+import type { UserRole } from "@/domain/auth/auth-user.entity";
 import { err, ok, type Result } from "@/domain/shared/result";
 import {
   AdminAlreadyExistsError,
   InviteFailedError,
 } from "@/domain/user/user.errors";
 import type {
-  InvitedAdmin,
+  InvitedUser,
   InviteRepository,
 } from "@/domain/user/invite.repository";
 
-export type InviteAdminDeps = {
+export type InviteUserDeps = {
   inviteRepository: InviteRepository;
 };
 
-export type InviteAdminInput = {
+export type InviteUserInput = {
   actingUserId: string;
   email: string;
   fullName: string;
+  role: UserRole;
 };
 
-export async function inviteAdmin(
-  { inviteRepository }: InviteAdminDeps,
-  input: InviteAdminInput,
-): Promise<Result<InvitedAdmin, Error>> {
+export async function inviteUser(
+  { inviteRepository }: InviteUserDeps,
+  input: InviteUserInput,
+): Promise<Result<InvitedUser, Error>> {
   const email = input.email.trim().toLowerCase();
   const fullName = input.fullName.trim();
   if (!email || !fullName) {
@@ -30,9 +32,10 @@ export async function inviteAdmin(
 
   try {
     return ok(
-      await inviteRepository.inviteAdminByEmail({
+      await inviteRepository.inviteByEmail({
         email,
         fullName,
+        role: input.role,
         invitedBy: input.actingUserId,
       }),
     );

@@ -12,7 +12,7 @@ import { isAdmin } from "@/domain/auth/auth-user.entity";
 import { getCurrentUser } from "@/use-cases/auth/get-current-user";
 import { changeUserRole } from "@/use-cases/users/change-user-role";
 import { deleteUser } from "@/use-cases/users/delete-user";
-import { inviteAdmin } from "@/use-cases/users/invite-admin";
+import { inviteUser } from "@/use-cases/users/invite-user";
 import { resendInvite } from "@/use-cases/users/resend-invite";
 import { updateUserDetails } from "@/use-cases/users/update-user-details";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -143,9 +143,10 @@ export async function deleteUserAction(
 const inviteSchema = z.object({
   email: z.string().trim().email("Enter a valid email."),
   fullName: z.string().trim().min(1, "Name is required.").max(120),
+  role: z.enum(["student", "staff", "admin"]),
 });
 
-export async function inviteAdminAction(
+export async function inviteUserAction(
   _prevState: UserActionState,
   formData: FormData,
 ): Promise<UserActionState> {
@@ -162,6 +163,7 @@ export async function inviteAdminAction(
   const parsed = inviteSchema.safeParse({
     email: formData.get("email"),
     fullName: formData.get("fullName"),
+    role: formData.get("role"),
   });
   if (!parsed.success) {
     return {
@@ -171,12 +173,13 @@ export async function inviteAdminAction(
   }
 
   const inviteRepository = new SupabaseInviteRepository(createAdminClient(), siteUrl());
-  const result = await inviteAdmin(
+  const result = await inviteUser(
     { inviteRepository },
     {
       actingUserId: user.id,
       email: parsed.data.email,
       fullName: parsed.data.fullName,
+      role: parsed.data.role,
     },
   );
   if (!result.ok) return { status: "error", message: result.error.message };
@@ -184,7 +187,7 @@ export async function inviteAdminAction(
   revalidatePath("/admin/users");
   return {
     status: "success",
-    message: `Invite ready for ${result.value.email}. Copy the link below and send it to them.`,
+    message: `Invite ready for ${result.value.email} (${result.value.role}). Copy the link below and send it to them.`,
     link: result.value.actionLink,
   };
 }

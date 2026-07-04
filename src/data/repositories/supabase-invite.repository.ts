@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
-  InviteAdminInput,
-  InvitedAdmin,
+  InviteByEmailInput,
+  InvitedUser,
   InviteRepository,
   InviteState,
   ResendResult,
@@ -34,7 +34,7 @@ export class SupabaseInviteRepository implements InviteRepository {
     return `${this.siteUrl}/auth/confirm?${params.toString()}`;
   }
 
-  async inviteAdminByEmail(input: InviteAdminInput): Promise<InvitedAdmin> {
+  async inviteByEmail(input: InviteByEmailInput): Promise<InvitedUser> {
     const { data, error } = await this.admin.auth.admin.generateLink({
       type: "invite",
       email: input.email,
@@ -47,17 +47,18 @@ export class SupabaseInviteRepository implements InviteRepository {
     const hashedToken = data.properties?.hashed_token;
     if (!user || !hashedToken) throw new Error("Invite link was not generated.");
 
-    // The signup trigger created the profile as a 'student'. Elevate it to admin
-    // and record the inviter so the new admin lands in the inviter's subtree.
+    // The signup trigger created the profile as a 'student'. Set the chosen role
+    // and record the inviter so an invited admin lands in the inviter's subtree.
     const { error: updateError } = await this.admin
       .from("profiles")
-      .update({ role: "admin", invited_by: input.invitedBy })
+      .update({ role: input.role, invited_by: input.invitedBy })
       .eq("id", user.id);
     if (updateError) throw updateError;
 
     return {
       id: user.id,
       email: user.email ?? input.email,
+      role: input.role,
       actionLink: this.buildLink(hashedToken),
     };
   }
