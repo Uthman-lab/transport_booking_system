@@ -31,6 +31,9 @@ export default async function AdminLayout({
           <Link href="/admin/routes" className="font-medium hover:underline">
             Routes
           </Link>
+          <Link href="/admin/users" className="font-medium hover:underline">
+            Users
+          </Link>
         </nav>
       </div>
       {children}
