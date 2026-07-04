@@ -51,6 +51,23 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Admin area: signed-in non-admins are bounced to the app. RLS is the hard
+  // backstop; this keeps them from even reaching the admin UI.
+  if (user && pathname.startsWith("/admin")) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (profile?.role !== "admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/trips";
+      url.search = "";
+      return NextResponse.redirect(url);
+    }
+  }
+
   if (user && AUTH_ONLY_PATHS.some((path) => pathname === path)) {
     const url = request.nextUrl.clone();
     url.pathname = "/trips";

@@ -1,6 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Trip } from "@/domain/trip/trip.entity";
-import type { TripRepository } from "@/domain/trip/trip.repository";
+import type {
+  NewTripInput,
+  TripRepository,
+  TripUpdate,
+} from "@/domain/trip/trip.repository";
 import { toTripEntity, type TripRow } from "@/data/mappers/trip.mapper";
 
 const ACTIVE_BOOKING_STATUSES = ["held", "confirmed"] as const;
@@ -48,6 +52,62 @@ export class SupabaseTripRepository implements TripRepository {
 
     if (error) throw error;
     return ((data as number[] | null) ?? []).map(Number);
+  }
+
+  async listAll(): Promise<Trip[]> {
+    const { data: rows, error } = await this.supabase
+      .from("trips")
+      .select(TRIP_SELECT)
+      .order("departure_at", { ascending: false })
+      .returns<TripRow[]>();
+
+    if (error) throw error;
+    if (!rows || rows.length === 0) return [];
+
+    const seatsBookedByTrip = await this.countActiveSeatsByTrip(rows.map((row) => row.id));
+    return rows.map((row) => toTripEntity(row, seatsBookedByTrip.get(row.id) ?? 0));
+  }
+
+  async createTrip(input: NewTripInput): Promise<Trip> {
+    // RLS ("trips are insertable by admin") authorizes this at the DB.
+    const { data, error } = await this.supabase
+      .from("trips")
+      .insert({
+        route_id: input.routeId,
+        departure_at: input.departureAt.toISOString(),
+        capacity: input.capacity,
+        price_ghs: input.priceGhs,
+      })
+      .select(TRIP_SELECT)
+      .single<TripRow>();
+
+    if (error) throw error;
+    return toTripEntity(data, 0);
+  }
+
+  async updateTrip(tripId: string, changes: TripUpdate): Promise<Trip> {
+    const patch: Record<string, unknown> = {};
+    if (changes.routeId !== undefined) patch.route_id = changes.routeId;
+    if (changes.departureAt !== undefined) patch.departure_at = changes.departureAt.toISOString();
+    if (changes.capacity !== undefined) patch.capacity = changes.capacity;
+    if (changes.priceGhs !== undefined) patch.price_ghs = changes.priceGhs;
+    if (changes.status !== undefined) patch.status = changes.status;
+
+    const { data, error } = await this.supabase
+      .from("trips")
+      .update(patch)
+      .eq("id", tripId)
+      .select(TRIP_SELECT)
+      .single<TripRow>();
+
+    if (error) throw error;
+
+    const seatsBookedByTrip = await this.countActiveSeatsByTrip([tripId]);
+    return toTripEntity(data, seatsBookedByTrip.get(tripId) ?? 0);
+  }
+
+  async cancelTrip(tripId: string): Promise<Trip> {
+    return this.updateTrip(tripId, { status: "cancelled" });
   }
 
   private async countActiveSeatsByTrip(tripIds: string[]): Promise<Map<string, number>> {

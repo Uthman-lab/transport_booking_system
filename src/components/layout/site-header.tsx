@@ -5,6 +5,7 @@ import { SignOutButton } from "@/components/auth/sign-out-button";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { SupabaseAuthRepository } from "@/data/repositories/supabase-auth.repository";
 import { createClient } from "@/data/supabase/server";
+import { isAdmin } from "@/domain/auth/auth-user.entity";
 import { getCurrentUser } from "@/use-cases/auth/get-current-user";
 
 // Server Component composition root: build the repository, call the use case,
@@ -36,6 +37,11 @@ export async function SiteHeader() {
             <Link href="/my-bookings" className="font-medium hover:underline">
               My bookings
             </Link>
+            {isAdmin(user) ? (
+              <Link href="/admin/trips" className="font-medium hover:underline">
+                Admin
+              </Link>
+            ) : null}
             <span className="text-muted">{user.fullName}</span>
             <SignOutButton />
             <ThemeToggle />

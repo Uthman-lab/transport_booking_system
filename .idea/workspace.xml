@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e6367996-abbd-46bd-b7c0-2f8d6ad5c7de" name="Changes" comment="feat: implement booking and waitlist flow with seat selection&#10;&#10;- Introduced seat reservation and waitlist actions for trip bookings.&#10;- Added UI for seat maps, booking details, and payment panels.&#10;- Integrated booking confirmation, cancellation, and waitlist management with real-time updates.&#10;- Implemented backend support for getting occupied seats and trip seat maps.&#10;- Seeded data with deterministic, idempotent routes and trips for testing.">
+    <list default="true" id="e6367996-abbd-46bd-b7c0-2f8d6ad5c7de" name="Changes" comment="fix: update UUIDs in seed data to ensure RFC-4122 v4 compliance&#10;&#10;- Adjusted route and trip UUIDs to conform to RFC-4122 version 4 standard.&#10;- Updated comments to highlight validation requirements for UUIDs.&#10;- Ensured consistency for seeded data with idempotent operations.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/supabase/seed.sql" beforeDir="false" afterPath="$PROJECT_DIR$/supabase/seed.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/layout/site-header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/site-header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/repositories/supabase-trip.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/repositories/supabase-trip.repository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/supabase/proxy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/supabase/proxy.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/trip/trip.entity.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/trip/trip.entity.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/trip/trip.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/trip/trip.repository.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +125,7 @@
       <option name="presentableId" value="Default" />
       <updated>1783172984907</updated>
       <workItem from="1783172986293" duration="1599000" />
-      <workItem from="1783174768526" duration="9133000" />
+      <workItem from="1783174768526" duration="10412000" />
     </task>
     <task id="LOCAL-00001" summary="fix: resolve RLS recursion issue, improve email confirmation flow&#10;&#10;- Fixed infinite recursion in RLS policies by introducing `current_user_role()` as a `SECURITY DEFINER` function to avoid self-referential queries.&#10;- Moved `current_user_role()` to an internal schema to restrict API exposure.&#10;- Updated RLS policies to reference the internal role helper.&#10;- Enabled email confirmation in Supabase config to align with updated authentication flow.&#10;- Enhanced user registration feedback and adjusted related repository and use-case logic for email confirmation handling.">
       <option name="closed" value="true" />
@@ -147,7 +151,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783184511784</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="fix: update UUIDs in seed data to ensure RFC-4122 v4 compliance&#10;&#10;- Adjusted route and trip UUIDs to conform to RFC-4122 version 4 standard.&#10;- Updated comments to highlight validation requirements for UUIDs.&#10;- Ensured consistency for seeded data with idempotent operations.">
+      <option name="closed" value="true" />
+      <created>1783185304503</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1783185304503</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -157,6 +169,7 @@
     <MESSAGE value="fix: resolve RLS recursion issue, improve email confirmation flow&#10;&#10;- Fixed infinite recursion in RLS policies by introducing `current_user_role()` as a `SECURITY DEFINER` function to avoid self-referential queries.&#10;- Moved `current_user_role()` to an internal schema to restrict API exposure.&#10;- Updated RLS policies to reference the internal role helper.&#10;- Enabled email confirmation in Supabase config to align with updated authentication flow.&#10;- Enhanced user registration feedback and adjusted related repository and use-case logic for email confirmation handling." />
     <MESSAGE value="feat: add theme toggle, improve UI consistency with new design tokens&#10;&#10;- Introduced a theme toggle component for light/dark mode switching with localStorage support.&#10;- Updated UI elements and forms to use consistent design tokens for colors, borders, and backgrounds.&#10;- Applied a professional palette derived from the UBBS crest.&#10;- Enhanced the header with logo support and integrated theme toggle.&#10;- Improved error handling for password reset requests with rate-limiting feedback." />
     <MESSAGE value="feat: implement booking and waitlist flow with seat selection&#10;&#10;- Introduced seat reservation and waitlist actions for trip bookings.&#10;- Added UI for seat maps, booking details, and payment panels.&#10;- Integrated booking confirmation, cancellation, and waitlist management with real-time updates.&#10;- Implemented backend support for getting occupied seats and trip seat maps.&#10;- Seeded data with deterministic, idempotent routes and trips for testing." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: implement booking and waitlist flow with seat selection&#10;&#10;- Introduced seat reservation and waitlist actions for trip bookings.&#10;- Added UI for seat maps, booking details, and payment panels.&#10;- Integrated booking confirmation, cancellation, and waitlist management with real-time updates.&#10;- Implemented backend support for getting occupied seats and trip seat maps.&#10;- Seeded data with deterministic, idempotent routes and trips for testing." />
+    <MESSAGE value="fix: update UUIDs in seed data to ensure RFC-4122 v4 compliance&#10;&#10;- Adjusted route and trip UUIDs to conform to RFC-4122 version 4 standard.&#10;- Updated comments to highlight validation requirements for UUIDs.&#10;- Ensured consistency for seeded data with idempotent operations." />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: update UUIDs in seed data to ensure RFC-4122 v4 compliance&#10;&#10;- Adjusted route and trip UUIDs to conform to RFC-4122 version 4 standard.&#10;- Updated comments to highlight validation requirements for UUIDs.&#10;- Ensured consistency for seeded data with idempotent operations." />
   </component>
 </project>

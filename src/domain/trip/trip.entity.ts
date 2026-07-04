@@ -23,3 +23,10 @@ export function isBookable(trip: Trip, now: Date = new Date()): boolean {
     availableSeats(trip) > 0
   );
 }
+
+// A trip may only be scheduled for a future departure. Pure rule (now is a
+// parameter) so admin use-cases can enforce it without touching the clock
+// directly.
+export function isSchedulable(departureAt: Date, now: Date = new Date()): boolean {
+  return departureAt.getTime() > now.getTime();
+}
