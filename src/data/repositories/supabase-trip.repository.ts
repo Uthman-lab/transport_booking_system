@@ -39,6 +39,17 @@ export class SupabaseTripRepository implements TripRepository {
     return toTripEntity(row, seatsBookedByTrip.get(tripId) ?? 0);
   }
 
+  async listOccupiedSeats(tripId: string): Promise<number[]> {
+    // public.get_occupied_seats is a SECURITY INVOKER wrapper over a privileged
+    // read; it returns only seat numbers, so no booking identity is exposed.
+    const { data, error } = await this.supabase.rpc("get_occupied_seats", {
+      p_trip_id: tripId,
+    });
+
+    if (error) throw error;
+    return ((data as number[] | null) ?? []).map(Number);
+  }
+
   private async countActiveSeatsByTrip(tripIds: string[]): Promise<Map<string, number>> {
     const { data: activeBookings, error } = await this.supabase
       .from("bookings")

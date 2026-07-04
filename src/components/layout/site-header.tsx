@@ -33,6 +33,9 @@ export async function SiteHeader() {
             <Link href="/trips" className="font-medium hover:underline">
               Trips
             </Link>
+            <Link href="/my-bookings" className="font-medium hover:underline">
+              My bookings
+            </Link>
             <span className="text-muted">{user.fullName}</span>
             <SignOutButton />
             <ThemeToggle />
