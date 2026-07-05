@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useCallback, useEffect, useRef, useState } from "react";
+import { startTransition, useActionState, useCallback, useEffect, useRef, useState } from "react";
 import jsQR from "jsqr";
 import { checkInAction, type CheckInState } from "@/app/staff/check-in/actions";
 
@@ -38,7 +38,12 @@ export function CheckInScanner() {
       stopCamera();
       const fd = new FormData();
       fd.set("ticketCode", code);
-      dispatch(fd);
+      // dispatch() is the useActionState action; calling it programmatically
+      // (rather than via a form `action` prop) must be wrapped in a transition
+      // so React tracks isPending correctly and doesn't warn.
+      startTransition(() => {
+        dispatch(fd);
+      });
     },
     [dispatch, stopCamera],
   );

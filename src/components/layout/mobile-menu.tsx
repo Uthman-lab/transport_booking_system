@@ -44,9 +44,14 @@ export function MobileMenu({
               My bookings
             </MobileLink>
             {staff && (
-              <MobileLink href="/staff/check-in" onClick={close}>
-                Check-in
-              </MobileLink>
+              <>
+                <MobileLink href="/staff/trips" onClick={close}>
+                  Boarding
+                </MobileLink>
+                <MobileLink href="/staff/check-in" onClick={close}>
+                  Scan
+                </MobileLink>
+              </>
             )}
             {admin && (
               <MobileLink href="/admin/trips" onClick={close}>

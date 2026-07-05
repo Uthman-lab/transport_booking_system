@@ -43,9 +43,14 @@ export async function SiteHeader() {
                 My bookings
               </Link>
               {isStaff(user) ? (
-                <Link href="/staff/check-in" className="font-medium text-muted transition-colors hover:text-foreground">
-                  Check-in
-                </Link>
+                <>
+                  <Link href="/staff/trips" className="font-medium text-muted transition-colors hover:text-foreground">
+                    Boarding
+                  </Link>
+                  <Link href="/staff/check-in" className="font-medium text-muted transition-colors hover:text-foreground">
+                    Scan
+                  </Link>
+                </>
               ) : null}
               {isAdmin(user) ? (
                 <Link href="/admin/trips" className="font-medium text-muted transition-colors hover:text-foreground">
