@@ -19,19 +19,22 @@ export async function GET(request: NextRequest) {
 
   const supabase = await createClient();
 
+  let reason = "Missing verification token";
+
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      return NextResponse.redirect(new URL(safeNext, request.url));
-    }
+    if (!error) return NextResponse.redirect(new URL(safeNext, request.url));
+    reason = error.message;
   } else if (tokenHash && type) {
     const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
-    if (!error) {
-      return NextResponse.redirect(new URL(safeNext, request.url));
-    }
+    if (!error) return NextResponse.redirect(new URL(safeNext, request.url));
+    reason = error.message;
   }
 
-  return NextResponse.redirect(
-    new URL("/login?error=Could+not+verify+link", request.url),
-  );
+  // Surface the real reason (and log it) instead of a generic message, so
+  // verification failures are diagnosable in production.
+  console.error("auth/confirm verification failed:", { reason, type, hasCode: Boolean(code) });
+  const loginUrl = new URL("/login", request.url);
+  loginUrl.searchParams.set("error", reason);
+  return NextResponse.redirect(loginUrl);
 }

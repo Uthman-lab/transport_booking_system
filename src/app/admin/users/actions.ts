@@ -195,7 +195,9 @@ export async function inviteUserAction(
   revalidatePath("/admin/users");
   return {
     status: "success",
-    message: `Invite ready for ${result.value.email} (${result.value.role}). Copy the link below and send it to them.`,
+    message: result.value.emailed
+      ? `Invitation emailed to ${result.value.email} (${result.value.role}). The link is below too — copy it if you'd rather send it yourself.`
+      : `Invite ready for ${result.value.email} (${result.value.role}). Email isn't configured, so copy the link below and send it to them.`,
     link: result.value.actionLink,
   };
 }
@@ -347,11 +349,12 @@ export async function bulkInviteAction(
     ok: true,
     detail: u.actionLink,
   }));
+  const emailedCount = invited.filter((u) => u.emailed).length;
 
   revalidatePath("/admin/users");
   return {
     status: "success",
-    message: `Created ${invited.length} account(s). Download the results to share each invite link.`,
+    message: `Invited ${invited.length} user(s)${emailedCount ? `, ${emailedCount} emailed` : ""}. Download the results for each invite link.`,
     created: invited.length,
     results,
     csv: resultsToCsv(results),

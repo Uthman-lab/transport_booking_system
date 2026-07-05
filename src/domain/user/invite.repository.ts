@@ -40,7 +40,11 @@ export type InvitedUser = {
   id: string;
   email: string;
   role: UserRole;
+  // The invite link — always returned so the admin can copy/send it manually.
   actionLink: string;
+  // Whether the invite email was also sent (best-effort; false if SMTP isn't
+  // configured or sending failed — the admin still has actionLink).
+  emailed: boolean;
 };
 
 // Per-user invite state, sourced from auth.users.

@@ -6,6 +6,7 @@ import type {
   InviteState,
   ResendResult,
 } from "@/domain/user/invite.repository";
+import { sendInviteEmail } from "@/data/email/mailer";
 
 // Implemented with a SERVICE-ROLE client (see data/supabase/admin.ts). We mint
 // invite links with generateLink rather than inviteUserByEmail: generateLink is
@@ -70,12 +71,20 @@ export class SupabaseInviteRepository implements InviteRepository {
       throw updateError;
     }
 
-    return {
-      id: user.id,
-      email: user.email ?? input.email,
-      role: input.role,
-      actionLink: this.buildLink(hashedToken),
-    };
+    const actionLink = this.buildLink(hashedToken);
+    const email = user.email ?? input.email;
+
+    // Best-effort: email the same link so it also lands in the invitee's inbox.
+    // If SMTP isn't configured or the send fails, the admin still has the link.
+    let emailed = false;
+    try {
+      await sendInviteEmail({ to: email, fullName: input.fullName, link: actionLink, role: input.role });
+      emailed = true;
+    } catch (cause) {
+      console.error("invite email send failed", cause);
+    }
+
+    return { id: user.id, email, role: input.role, actionLink, emailed };
   }
 
   async inviteManyAtomic(inputs: InviteByEmailInput[]): Promise<InvitedUser[]> {

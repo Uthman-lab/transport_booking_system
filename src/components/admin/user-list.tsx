@@ -384,9 +384,9 @@ function InviteUserForm({ configured }: { configured: boolean }) {
       <div>
         <h3 className="text-base font-semibold">Invite a user</h3>
         <p className="mt-1 text-sm text-muted">
-          Creates the account with the role you choose and generates a one-time
-          invite link. Copy it and send it to the invitee — they open it, set a
-          password, and join. An invited admin lands in your invite tree.
+          Creates the account with the role you choose. The invite link is
+          emailed to them (when email is set up) and always shown here so you can
+          copy and send it yourself. An invited admin lands in your invite tree.
         </p>
       </div>
 
