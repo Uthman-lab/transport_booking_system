@@ -8,9 +8,11 @@ import { SignOutButton } from "@/components/auth/sign-out-button";
 // in SiteHeader and is hidden below `md`; this takes over there.
 export function MobileMenu({
   admin,
+  staff,
   fullName,
 }: {
   admin: boolean;
+  staff: boolean;
   fullName: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -41,6 +43,11 @@ export function MobileMenu({
             <MobileLink href="/my-bookings" onClick={close}>
               My bookings
             </MobileLink>
+            {staff && (
+              <MobileLink href="/staff/check-in" onClick={close}>
+                Check-in
+              </MobileLink>
+            )}
             {admin && (
               <MobileLink href="/admin/trips" onClick={close}>
                 Admin

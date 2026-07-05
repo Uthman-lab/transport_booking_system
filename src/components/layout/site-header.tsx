@@ -8,7 +8,7 @@ import { buttonClasses } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { SupabaseAuthRepository } from "@/data/repositories/supabase-auth.repository";
 import { createClient } from "@/data/supabase/server";
-import { isAdmin } from "@/domain/auth/auth-user.entity";
+import { isAdmin, isStaff } from "@/domain/auth/auth-user.entity";
 import { getCurrentUser } from "@/use-cases/auth/get-current-user";
 
 // Server Component composition root: build the repository, call the use case,
@@ -42,6 +42,11 @@ export async function SiteHeader() {
               <Link href="/my-bookings" className="font-medium text-muted transition-colors hover:text-foreground">
                 My bookings
               </Link>
+              {isStaff(user) ? (
+                <Link href="/staff/check-in" className="font-medium text-muted transition-colors hover:text-foreground">
+                  Check-in
+                </Link>
+              ) : null}
               {isAdmin(user) ? (
                 <Link href="/admin/trips" className="font-medium text-muted transition-colors hover:text-foreground">
                   Admin
@@ -54,7 +59,7 @@ export async function SiteHeader() {
             {/* Mobile nav */}
             <div className="flex items-center gap-2 md:hidden">
               <ThemeToggle />
-              <MobileMenu admin={isAdmin(user)} fullName={user.fullName} />
+              <MobileMenu admin={isAdmin(user)} staff={isStaff(user)} fullName={user.fullName} />
             </div>
           </>
         ) : (

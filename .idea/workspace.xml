@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e6367996-abbd-46bd-b7c0-2f8d6ad5c7de" name="Changes" comment="feat: redesign admin layout and add SiteBackground component&#10;&#10;- Added `AdminNav` for consistent tab navigation in admin sections.&#10;- Redesigned admin layout with improved structure and updated headings.&#10;- Introduced `SiteBackground` for a decorative page background across all routes.&#10;- Refined trip and route pages with reusable components (e.g., `Container`, `Badge`, `Card`, `Button`).&#10;- Improved UI consistency by aligning styles and spacing across admin and main pages.">
+    <list default="true" id="e6367996-abbd-46bd-b7c0-2f8d6ad5c7de" name="Changes" comment="feat: add MobileMenu and SiteFooter components for improved navigation and layout&#10;&#10;- Introduced `MobileMenu` for responsive navigation in the signed-in header (mobile-first design).&#10;- Added `SiteFooter` with UBBS branding, links, contact info, and developer credit.&#10;- Updated `layout.tsx` to include `SiteFooter` for consistent site-wide usability.&#10;- Enhanced `SiteHeader` to support both desktop and mobile navigation.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FEATURES.md" beforeDir="false" afterPath="$PROJECT_DIR$/FEATURES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/layout/mobile-menu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/mobile-menu.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/layout/site-header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/site-header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/supabase/proxy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/supabase/proxy.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +126,7 @@
       <option name="presentableId" value="Default" />
       <updated>1783172984907</updated>
       <workItem from="1783172986293" duration="1599000" />
-      <workItem from="1783174768526" duration="22354000" />
+      <workItem from="1783174768526" duration="24152000" />
     </task>
     <task id="LOCAL-00001" summary="fix: resolve RLS recursion issue, improve email confirmation flow&#10;&#10;- Fixed infinite recursion in RLS policies by introducing `current_user_role()` as a `SECURITY DEFINER` function to avoid self-referential queries.&#10;- Moved `current_user_role()` to an internal schema to restrict API exposure.&#10;- Updated RLS policies to reference the internal role helper.&#10;- Enabled email confirmation in Supabase config to align with updated authentication flow.&#10;- Enhanced user registration feedback and adjusted related repository and use-case logic for email confirmation handling.">
       <option name="closed" value="true" />
@@ -213,7 +216,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783202083049</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="feat: add MobileMenu and SiteFooter components for improved navigation and layout&#10;&#10;- Introduced `MobileMenu` for responsive navigation in the signed-in header (mobile-first design).&#10;- Added `SiteFooter` with UBBS branding, links, contact info, and developer credit.&#10;- Updated `layout.tsx` to include `SiteFooter` for consistent site-wide usability.&#10;- Enhanced `SiteHeader` to support both desktop and mobile navigation.">
+      <option name="closed" value="true" />
+      <created>1783202795700</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1783202795700</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -234,6 +245,8 @@
     <MESSAGE value="feat: add admin navigation and site-wide background components&#10;&#10;- Implemented `AdminNav` component with pill tab navigation for admin sections.&#10;- Introduced `SiteBackground` component with decorative SVG and CSS gradient background for all routes." />
     <MESSAGE value="feat: enhance admin layout and introduce reusable components&#10;&#10;- Added `AdminNav` and `SiteBackground` components for better navigation and design consistency.&#10;- Updated admin layout to use reusable `Container` and `AdminNav` components.&#10;- Improved trip and route listing styles with enhanced readability and structure.&#10;- Refined UI elements with consistent design tokens and reusable classes." />
     <MESSAGE value="feat: redesign admin layout and add SiteBackground component&#10;&#10;- Added `AdminNav` for consistent tab navigation in admin sections.&#10;- Redesigned admin layout with improved structure and updated headings.&#10;- Introduced `SiteBackground` for a decorative page background across all routes.&#10;- Refined trip and route pages with reusable components (e.g., `Container`, `Badge`, `Card`, `Button`).&#10;- Improved UI consistency by aligning styles and spacing across admin and main pages." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: redesign admin layout and add SiteBackground component&#10;&#10;- Added `AdminNav` for consistent tab navigation in admin sections.&#10;- Redesigned admin layout with improved structure and updated headings.&#10;- Introduced `SiteBackground` for a decorative page background across all routes.&#10;- Refined trip and route pages with reusable components (e.g., `Container`, `Badge`, `Card`, `Button`).&#10;- Improved UI consistency by aligning styles and spacing across admin and main pages." />
+    <MESSAGE value="feat: add mobile menu and site footer components&#10;&#10;- Implemented `MobileMenu` for responsive small-screen navigation.&#10;- Added `SiteFooter` with explore links, client contact, and developer credit.&#10;- Updated `SiteHeader` to integrate the mobile menu and improve responsiveness." />
+    <MESSAGE value="feat: add MobileMenu and SiteFooter components for improved navigation and layout&#10;&#10;- Introduced `MobileMenu` for responsive navigation in the signed-in header (mobile-first design).&#10;- Added `SiteFooter` with UBBS branding, links, contact info, and developer credit.&#10;- Updated `layout.tsx` to include `SiteFooter` for consistent site-wide usability.&#10;- Enhanced `SiteHeader` to support both desktop and mobile navigation." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add MobileMenu and SiteFooter components for improved navigation and layout&#10;&#10;- Introduced `MobileMenu` for responsive navigation in the signed-in header (mobile-first design).&#10;- Added `SiteFooter` with UBBS branding, links, contact info, and developer credit.&#10;- Updated `layout.tsx` to include `SiteFooter` for consistent site-wide usability.&#10;- Enhanced `SiteHeader` to support both desktop and mobile navigation." />
   </component>
 </project>

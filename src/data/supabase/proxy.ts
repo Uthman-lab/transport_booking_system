@@ -55,15 +55,21 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Admin area: signed-in non-admins are bounced to the app. RLS is the hard
-  // backstop; this keeps them from even reaching the admin UI.
-  if (user && pathname.startsWith("/admin")) {
+  // backstop; this keeps them from even reaching the admin UI. The staff area
+  // is open to staff and admins. Both checks share one profile read.
+  if (user && (pathname.startsWith("/admin") || pathname.startsWith("/staff"))) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", user.id)
       .maybeSingle();
+    const role = profile?.role;
 
-    if (profile?.role !== "admin") {
+    const allowed = pathname.startsWith("/admin")
+      ? role === "admin"
+      : role === "admin" || role === "staff";
+
+    if (!allowed) {
       const url = request.nextUrl.clone();
       url.pathname = "/trips";
       url.search = "";

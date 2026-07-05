@@ -44,11 +44,11 @@ Feature list for the AAMUSTED bus booking platform. Built as a single Next.js pr
   `.claude/skills/nextjs-clean-architecture/SKILL.md`. First vertical slice built end-to-end: browsing
   upcoming trips (`use-cases/trips/list-available-trips.ts`) and booking a seat
   (`use-cases/bookings/book-seat.ts`) on `/trips`.
+- Admin user management (`/admin/users`): invite hierarchy, role changes, edit details, hard delete,
+  email invites via copyable link (`generateLink`).
+- Staff QR check-in / boarding scan (`/staff/check-in`): camera scanner (jsQR) + manual code entry,
+  backed by the `check_in_booking` RPC (`bookings.checked_in_at`/`checked_in_by`).
 
 **Next up**
-- Auth pages (login/register) — until these exist, `proxy.ts` redirects every route (including `/trips`)
-  to `/login`, so the trips page can't be exercised in a browser yet
-- Trip browsing + seat map + booking flow (route/page scaffolded; needs seat map UI + real UX polish)
-- Admin dashboard (routes/trips CRUD, bookings list, stats)
 - Notifications (email/SMS)
-- QR ticket generation + staff check-in
+- Reporting/exports (CSV) and admin dashboard stats (occupancy, revenue)
