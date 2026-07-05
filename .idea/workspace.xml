@@ -6,13 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e6367996-abbd-46bd-b7c0-2f8d6ad5c7de" name="Changes" comment="feat: add `created_at` ordering for trips and routes queries &#10;&#10;- Updated `supabase-trip.repository` and `supabase-route.repository` to sort results by `created_at` in descending order before other criteria.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/register/actions.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/register/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/auth/login-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/auth/login-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/auth/register-form.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/use-cases/auth/register.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/supabase/config.toml" beforeDir="false" afterPath="$PROJECT_DIR$/supabase/config.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +120,7 @@
       <option name="presentableId" value="Default" />
       <updated>1783172984907</updated>
       <workItem from="1783172986293" duration="1599000" />
-      <workItem from="1783174768526" duration="33933000" />
+      <workItem from="1783174768526" duration="35519000" />
     </task>
     <task id="LOCAL-00001" summary="fix: resolve RLS recursion issue, improve email confirmation flow&#10;&#10;- Fixed infinite recursion in RLS policies by introducing `current_user_role()` as a `SECURITY DEFINER` function to avoid self-referential queries.&#10;- Moved `current_user_role()` to an internal schema to restrict API exposure.&#10;- Updated RLS policies to reference the internal role helper.&#10;- Enabled email confirmation in Supabase config to align with updated authentication flow.&#10;- Enhanced user registration feedback and adjusted related repository and use-case logic for email confirmation handling.">
       <option name="closed" value="true" />

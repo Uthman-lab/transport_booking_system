@@ -40,14 +40,32 @@ export async function resetPasswordAction(
   }
 
   const supabase = await createClient();
-  const result = await resetPassword(
-    { authRepository: new SupabaseAuthRepository(supabase) },
-    parsed.data.password,
-  );
+
+  let result;
+  try {
+    result = await resetPassword(
+      { authRepository: new SupabaseAuthRepository(supabase) },
+      parsed.data.password,
+    );
+  } catch (cause) {
+    // Anything other than a weak-password error (e.g. reused password, or an
+    // expired/missing recovery session) reaches here. Surface it instead of
+    // letting it bubble up as an opaque 500, and log the real reason.
+    console.error("reset-password: could not update password", cause);
+    const detail = cause instanceof Error ? cause.message : "";
+    return {
+      status: "error",
+      message: detail
+        ? `Couldn't reset your password: ${detail}`
+        : "Couldn't reset your password. Your reset link may have expired — request a new one.",
+    };
+  }
 
   if (!result.ok) {
     return { status: "error", message: result.error.message };
   }
 
+  // Outside the try/catch: redirect() throws NEXT_REDIRECT by design and must
+  // not be swallowed.
   redirect("/trips");
 }
