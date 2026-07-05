@@ -8,11 +8,19 @@ export type Booking = {
   status: BookingStatus;
   holdExpiresAt: Date;
   ticketCode: string;
+  // When set, the ticket has been scanned at boarding and is spent — it can't
+  // be checked in again (enforced by the check_in_booking RPC).
+  checkedInAt: Date | null;
   createdAt: Date;
 };
 
 export function isHoldExpired(booking: Booking, now: Date = new Date()): boolean {
   return booking.status === "held" && booking.holdExpiresAt.getTime() <= now.getTime();
+}
+
+// A confirmed ticket that's already been boarded — no longer valid for entry.
+export function isCheckedIn(booking: Booking): boolean {
+  return booking.checkedInAt !== null;
 }
 
 // Trip fields a ticket / My Bookings row needs to render, denormalized onto a

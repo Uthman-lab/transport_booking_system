@@ -26,8 +26,11 @@ export default async function StaffLayout({
       <div className="flex items-center justify-between border-b border-card-border pb-4">
         <h1 className="text-2xl font-semibold">Staff</h1>
         <nav className="flex items-center gap-4 text-sm">
+          <Link href="/staff/trips" className="font-medium hover:underline">
+            Trips
+          </Link>
           <Link href="/staff/check-in" className="font-medium hover:underline">
-            Check-in
+            Scan
           </Link>
         </nav>
       </div>

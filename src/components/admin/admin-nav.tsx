@@ -8,6 +8,8 @@ const TABS = [
   { href: "/admin/trips", label: "Trips" },
   { href: "/admin/routes", label: "Routes" },
   { href: "/admin/users", label: "Users" },
+  // Boarding roster lives in the staff area (admins are staff too).
+  { href: "/staff/trips", label: "Boarding" },
 ];
 
 // Pill tab bar for the admin sections, with the active tab highlighted.

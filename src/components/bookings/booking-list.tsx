@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { CancelBookingButton } from "@/components/bookings/cancel-booking-button";
-import type { BookingStatus, BookingWithTrip } from "@/domain/booking/booking.entity";
+import { isCheckedIn, type BookingStatus, type BookingWithTrip } from "@/domain/booking/booking.entity";
+
+const BOARDED_STYLE = "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300";
 
 const STATUS_STYLES: Record<BookingStatus, string> = {
   held: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
@@ -31,7 +33,9 @@ export function BookingList({ bookings }: { bookings: BookingWithTrip[] }) {
 
   return (
     <ul className="mt-6 flex flex-col gap-3">
-      {bookings.map((booking) => (
+      {bookings.map((booking) => {
+        const boarded = isCheckedIn(booking);
+        return (
         <li
           key={booking.id}
           className="flex flex-col gap-3 rounded-xl border border-card-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between"
@@ -42,9 +46,9 @@ export function BookingList({ bookings }: { bookings: BookingWithTrip[] }) {
                 {booking.trip.origin} → {booking.trip.destination}
               </p>
               <span
-                className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[booking.status]}`}
+                className={`rounded-full px-2 py-0.5 text-xs font-medium ${boarded ? BOARDED_STYLE : STATUS_STYLES[booking.status]}`}
               >
-                {STATUS_LABELS[booking.status]}
+                {boarded ? "Boarded" : STATUS_LABELS[booking.status]}
               </span>
             </div>
             <p className="mt-1 text-sm text-muted">
@@ -77,12 +81,13 @@ export function BookingList({ bookings }: { bookings: BookingWithTrip[] }) {
               >
                 Rebook
               </Link>
-            ) : (
+            ) : boarded ? null : (
               <CancelBookingButton bookingId={booking.id} />
             )}
           </div>
         </li>
-      ))}
+        );
+      })}
     </ul>
   );
 }

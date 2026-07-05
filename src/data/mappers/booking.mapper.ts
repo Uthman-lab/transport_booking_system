@@ -9,6 +9,9 @@ export type BookingRow = {
   status: string;
   hold_expires_at: string;
   ticket_code: string;
+  // Added by the check-in migration. Optional here so rows returned by RPCs that
+  // don't select it still map cleanly (treated as not-yet-checked-in).
+  checked_in_at?: string | null;
   created_at: string;
 };
 
@@ -21,6 +24,7 @@ export function toBookingEntity(row: BookingRow): Booking {
     status: row.status as BookingStatus,
     holdExpiresAt: new Date(row.hold_expires_at),
     ticketCode: row.ticket_code,
+    checkedInAt: row.checked_in_at ? new Date(row.checked_in_at) : null,
     createdAt: new Date(row.created_at),
   };
 }

@@ -47,8 +47,17 @@ export function CheckInScanner() {
     setCamError(null);
     submittedRef.current = false;
 
+    // The camera API is only exposed in a secure context (HTTPS or localhost).
+    // Over http:// on a LAN IP (e.g. testing on a phone) the browser hides it,
+    // so explain the real cause rather than blaming the browser.
+    if (typeof window !== "undefined" && window.isSecureContext === false) {
+      setCamError(
+        "The camera needs a secure connection (HTTPS or localhost). This page is on plain HTTP, so the browser blocks it. Use manual entry below, or serve the app over HTTPS.",
+      );
+      return;
+    }
     if (!navigator.mediaDevices?.getUserMedia) {
-      setCamError("This browser can't access the camera — use manual entry below.");
+      setCamError("This browser doesn't support camera scanning — use manual entry below.");
       return;
     }
 
