@@ -49,11 +49,26 @@ export class SupabaseInviteRepository implements InviteRepository {
 
     // The signup trigger created the profile as a 'student'. Set the chosen role
     // and record the inviter so an invited admin lands in the inviter's subtree.
+    // Optional student_id/phone are written when the caller supplies them.
+    const patch: {
+      role: string;
+      invited_by: string;
+      student_id?: string | null;
+      phone?: string | null;
+    } = { role: input.role, invited_by: input.invitedBy };
+    if (input.studentId !== undefined) patch.student_id = input.studentId;
+    if (input.phone !== undefined) patch.phone = input.phone;
+
     const { error: updateError } = await this.admin
       .from("profiles")
-      .update({ role: input.role, invited_by: input.invitedBy })
+      .update(patch)
       .eq("id", user.id);
-    if (updateError) throw updateError;
+    if (updateError) {
+      // The auth user was created by generateLink but we couldn't finish setting
+      // it up — remove it so this row leaves nothing behind.
+      await this.admin.auth.admin.deleteUser(user.id).catch(() => {});
+      throw updateError;
+    }
 
     return {
       id: user.id,
@@ -61,6 +76,23 @@ export class SupabaseInviteRepository implements InviteRepository {
       role: input.role,
       actionLink: this.buildLink(hashedToken),
     };
+  }
+
+  async inviteManyAtomic(inputs: InviteByEmailInput[]): Promise<InvitedUser[]> {
+    const created: InvitedUser[] = [];
+    try {
+      for (const input of inputs) {
+        created.push(await this.inviteByEmail(input));
+      }
+      return created;
+    } catch (cause) {
+      // Roll back the whole batch: delete every account created so far so the
+      // upload is all-or-nothing.
+      await Promise.all(
+        created.map((u) => this.admin.auth.admin.deleteUser(u.id).catch(() => {})),
+      );
+      throw cause;
+    }
   }
 
   async listInviteStates(): Promise<InviteState[]> {

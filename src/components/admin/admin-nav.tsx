@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/components/ui/utils";
 
 const TABS = [
+  { href: "/admin/dashboard", label: "Dashboard" },
   { href: "/admin/trips", label: "Trips" },
   { href: "/admin/routes", label: "Routes" },
   { href: "/admin/users", label: "Users" },

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useActionState } from "react";
+import { BulkInviteForm } from "@/components/admin/bulk-invite-form";
 import {
   changeUserRoleAction,
   deleteUserAction,
@@ -62,6 +63,7 @@ export function UserList({
   return (
     <div className="mt-6 flex flex-col gap-8">
       <InviteUserForm configured={inviteConfigured} />
+      <BulkInviteForm configured={inviteConfigured} />
 
       {users.length === 0 ? (
         <p className="text-muted">No users yet.</p>

@@ -27,7 +27,9 @@ export default async function AdminLayout({
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight">Admin console</h1>
-            <p className="mt-1 text-muted">Manage trips, routes, and users.</p>
+            <p className="mt-1 text-muted">
+              Track performance and manage trips, routes, and users.
+            </p>
           </div>
           <AdminNav />
         </div>

@@ -10,6 +10,28 @@ export type InviteByEmailInput = {
   role: UserRole;
   // The acting admin, recorded as the invitee's inviter (invited_by).
   invitedBy: string;
+  // Optional profile details (set on the created profile when provided).
+  studentId?: string | null;
+  phone?: string | null;
+};
+
+// A raw row from an uploaded spreadsheet (strings; validated by the use case).
+export type BulkInviteInputRow = {
+  fullName: string;
+  email: string;
+  role: string;
+  studentId?: string | null;
+  phone?: string | null;
+};
+
+// Per-row outcome of a bulk invite. `detail` holds the invite link on success
+// or the failure reason otherwise.
+export type BulkInviteRowResult = {
+  rowNumber: number;
+  email: string;
+  role: UserRole | null;
+  ok: boolean;
+  detail: string;
 };
 
 // An invite link the admin can copy/share. Uses the token_hash flow that
@@ -36,6 +58,9 @@ export type ResendResult = {
 
 export interface InviteRepository {
   inviteByEmail(input: InviteByEmailInput): Promise<InvitedUser>;
+  // Creates every invite or none: if any row fails, the accounts already created
+  // in this batch are deleted before the error propagates (transaction-like).
+  inviteManyAtomic(inputs: InviteByEmailInput[]): Promise<InvitedUser[]>;
   listInviteStates(): Promise<InviteState[]>;
   resendInvite(userId: string): Promise<ResendResult>;
 }
