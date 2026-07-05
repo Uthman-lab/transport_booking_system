@@ -58,6 +58,7 @@ export class SupabaseTripRepository implements TripRepository {
     const { data: rows, error } = await this.supabase
       .from("trips")
       .select(TRIP_SELECT)
+      .order("created_at", { ascending: false })
       .order("departure_at", { ascending: false })
       .returns<TripRow[]>();
 

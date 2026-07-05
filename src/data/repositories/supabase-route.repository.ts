@@ -12,6 +12,7 @@ export class SupabaseRouteRepository implements RouteRepository {
     const { data, error } = await this.supabase
       .from("routes")
       .select(ROUTE_SELECT)
+      .order("created_at", { ascending: false })
       .order("origin", { ascending: true })
       .returns<RouteRow[]>();
 
