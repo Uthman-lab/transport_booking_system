@@ -49,14 +49,9 @@ export default async function Home() {
                   Browse trips →
                 </Link>
               ) : (
-                <>
-                  <Link href="/register" className={buttonClasses("primary", "lg")}>
-                    Create account
-                  </Link>
-                  <Link href="/login" className={buttonClasses("outline", "lg")}>
-                    Sign in
-                  </Link>
-                </>
+                <Link href="/login" className={buttonClasses("primary", "lg")}>
+                  Sign in
+                </Link>
               )}
             </div>
             <dl className="mt-10 flex flex-wrap gap-x-8 gap-y-4">

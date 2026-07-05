@@ -58,15 +58,10 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
       </button>
 
       <div className="flex flex-col gap-1 text-sm text-muted">
-        <span>
-          No account?{" "}
-          <Link href="/register" className="font-medium text-link underline">
-            Register
-          </Link>
-        </span>
         <Link href="/forgot-password" className="font-medium text-link underline">
           Forgot password?
         </Link>
+        <span>Accounts are created by an administrator.</span>
       </div>
     </form>
   );
