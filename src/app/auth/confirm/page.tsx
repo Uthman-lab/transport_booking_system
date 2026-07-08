@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { confirmAction } from "./actions";
+import { ConfirmForm } from "./confirm-form";
 
 // Interstitial: instead of verifying the token on GET (which link-preview and
 // email-scanner bots would trigger, burning the one-time token), we show a
@@ -56,25 +56,13 @@ export default async function ConfirmPage({
             </Link>
           </>
         ) : (
-          <>
-            <h1 className="text-lg font-semibold">You&apos;re almost there</h1>
-            <p className="mt-2 text-sm text-muted">
-              Click continue to finish and{" "}
-              {settingPassword ? "set your password" : "sign in"}.
-            </p>
-            <form action={confirmAction} className="mt-6">
-              <input type="hidden" name="token_hash" value={tokenHash} />
-              <input type="hidden" name="code" value={code} />
-              <input type="hidden" name="type" value={type} />
-              <input type="hidden" name="next" value={next} />
-              <button
-                type="submit"
-                className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover"
-              >
-                Continue
-              </button>
-            </form>
-          </>
+          <ConfirmForm
+            tokenHash={tokenHash}
+            code={code}
+            type={type}
+            next={next}
+            settingPassword={settingPassword}
+          />
         )}
       </div>
     </main>

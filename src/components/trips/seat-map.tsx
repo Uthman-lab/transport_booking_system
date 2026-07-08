@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { bookSeatAction, type BookSeatActionState } from "@/app/trips/[id]/actions";
+import { ActionButton } from "@/components/ui/action-button";
 import type { Seat } from "@/domain/trip/seat-map";
 
 const initialState: BookSeatActionState = { status: "idle" };
@@ -61,17 +62,16 @@ export function SeatMap({
         </p>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={pending || selected === null}
-        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
+      <ActionButton
+        pending={pending}
+        pendingText="Holding seat…"
+        disabled={selected === null}
+        className="rounded-md"
       >
-        {pending
-          ? "Holding seat…"
-          : selected
-            ? `Hold seat ${selected} · GHS ${priceGhs.toFixed(2)}`
-            : "Select a seat"}
-      </button>
+        {selected
+          ? `Hold seat ${selected} · GHS ${priceGhs.toFixed(2)}`
+          : "Select a seat"}
+      </ActionButton>
     </form>
   );
 }

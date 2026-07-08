@@ -6,6 +6,7 @@ import {
   forgotPasswordAction,
   type ForgotPasswordActionState,
 } from "@/app/forgot-password/actions";
+import { ActionButton } from "@/components/ui/action-button";
 
 const initialState: ForgotPasswordActionState = { status: "idle" };
 
@@ -47,13 +48,9 @@ export function ForgotPasswordForm() {
         </p>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
-      >
-        {pending ? "Sending…" : "Send reset link"}
-      </button>
+      <ActionButton pending={pending} pendingText="Sending…" className="rounded-md">
+        Send reset link
+      </ActionButton>
 
       <span className="text-sm text-muted">
         Remembered it?{" "}

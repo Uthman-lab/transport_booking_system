@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { cancelBookingAction, type BookingActionState } from "@/app/bookings/[id]/actions";
+import { ActionButton } from "@/components/ui/action-button";
 
 const initialState: BookingActionState = { status: "idle" };
 
@@ -13,13 +14,15 @@ export function CancelBookingButton({ bookingId }: { bookingId: string }) {
   return (
     <form action={formAction} className="flex items-center gap-2">
       <input type="hidden" name="bookingId" value={bookingId} />
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-md border border-card-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-card disabled:opacity-60"
+      <ActionButton
+        pending={pending}
+        pendingText="Cancelling…"
+        variant="outline"
+        size="sm"
+        className="rounded-md"
       >
-        {pending ? "Cancelling…" : "Cancel"}
-      </button>
+        Cancel
+      </ActionButton>
       {state.status === "error" && state.message ? (
         <span role="alert" className="text-xs text-red-600 dark:text-red-400">
           {state.message}

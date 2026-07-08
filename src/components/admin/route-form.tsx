@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { createRouteAction, type RouteFormState } from "@/app/admin/routes/actions";
+import { ActionButton } from "@/components/ui/action-button";
 
 const initialState: RouteFormState = { status: "idle" };
 
@@ -45,13 +46,9 @@ export function RouteForm() {
         </p>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="self-start rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
-      >
-        {pending ? "Adding…" : "Add route"}
-      </button>
+      <ActionButton pending={pending} pendingText="Adding…" className="self-start rounded-md">
+        Add route
+      </ActionButton>
     </form>
   );
 }

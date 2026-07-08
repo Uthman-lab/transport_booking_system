@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { joinWaitlistAction, type JoinWaitlistActionState } from "@/app/trips/[id]/actions";
+import { ActionButton } from "@/components/ui/action-button";
 
 const initialState: JoinWaitlistActionState = { status: "idle" };
 
@@ -27,13 +28,13 @@ export function WaitlistPanel({ tripId }: { tripId: string }) {
               {state.message}
             </p>
           ) : null}
-          <button
-            type="submit"
-            disabled={pending}
-            className="self-start rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
+          <ActionButton
+            pending={pending}
+            pendingText="Joining…"
+            className="self-start rounded-md"
           >
-            {pending ? "Joining…" : "Join waitlist"}
-          </button>
+            Join waitlist
+          </ActionButton>
         </form>
       )}
     </div>

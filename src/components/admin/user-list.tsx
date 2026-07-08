@@ -13,6 +13,7 @@ import {
 } from "@/app/admin/users/actions";
 import type { UserRole } from "@/domain/auth/auth-user.entity";
 import { USER_ROLES, type ManagedUser } from "@/domain/user/user.entity";
+import { ActionButton } from "@/components/ui/action-button";
 
 const initialState: UserActionState = { status: "idle" };
 
@@ -226,9 +227,9 @@ function DetailsForm({ user }: { user: ManagedUser }) {
         </label>
       </div>
       <div className="flex items-center gap-2">
-        <button type="submit" disabled={pending} className={buttonClass}>
-          {pending ? "Saving…" : "Save details"}
-        </button>
+        <ActionButton pending={pending} pendingText="Saving…" variant="outline" size="sm" className={buttonClass}>
+          Save details
+        </ActionButton>
         {state.status === "error" && state.message ? (
           <span role="alert" className="text-xs text-red-600 dark:text-red-400">
             {state.message}
@@ -257,9 +258,9 @@ function RoleControl({ user }: { user: ManagedUser }) {
           </option>
         ))}
       </select>
-      <button type="submit" disabled={pending} className={buttonClass}>
-        {pending ? "Saving…" : "Set role"}
-      </button>
+      <ActionButton pending={pending} pendingText="Saving…" variant="outline" size="sm" className={buttonClass}>
+        Set role
+      </ActionButton>
       {state.status === "error" && state.message ? (
         <span role="alert" className="text-xs text-red-600 dark:text-red-400">
           {state.message}
@@ -284,9 +285,9 @@ function ResendControl({ user }: { user: ManagedUser }) {
       </p>
       <form action={formAction}>
         <input type="hidden" name="userId" value={user.id} />
-        <button type="submit" disabled={pending} className={buttonClass}>
-          {pending ? "Generating…" : "Resend invite"}
-        </button>
+        <ActionButton pending={pending} pendingText="Generating…" variant="outline" size="sm" className={buttonClass}>
+          Resend invite
+        </ActionButton>
       </form>
       {state.status === "error" && state.message ? (
         <span role="alert" className="text-xs text-red-600 dark:text-red-400">
@@ -323,13 +324,13 @@ function DeleteControl({ user }: { user: ManagedUser }) {
     <form action={formAction} className="flex flex-wrap items-center gap-2">
       <input type="hidden" name="userId" value={user.id} />
       <span className="text-xs text-muted">Delete {user.fullName}?</span>
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-60"
+      <ActionButton
+        pending={pending}
+        pendingText="Deleting…"
+        className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-red-700"
       >
-        {pending ? "Deleting…" : "Yes, delete"}
-      </button>
+        Yes, delete
+      </ActionButton>
       <button type="button" onClick={() => setConfirming(false)} className={buttonClass}>
         Cancel
       </button>
@@ -432,13 +433,14 @@ function InviteUserForm({ configured }: { configured: boolean }) {
         </div>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={pending || !configured}
-        className="self-start rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
+      <ActionButton
+        pending={pending}
+        pendingText="Creating…"
+        disabled={!configured}
+        className="self-start rounded-md"
       >
-        {pending ? "Creating…" : "Create invite"}
-      </button>
+        Create invite
+      </ActionButton>
     </form>
   );
 }

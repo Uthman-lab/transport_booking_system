@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BookingActionLink } from "@/components/bookings/booking-action-link";
 import { CancelBookingButton } from "@/components/bookings/cancel-booking-button";
 import { isCheckedIn, type BookingStatus, type BookingWithTrip } from "@/domain/booking/booking.entity";
 
@@ -59,28 +60,19 @@ export function BookingList({ bookings }: { bookings: BookingWithTrip[] }) {
 
           <div className="flex items-center gap-2">
             {booking.status === "held" ? (
-              <Link
-                href={`/bookings/${booking.id}`}
-                className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover"
-              >
+              <BookingActionLink href={`/bookings/${booking.id}`} variant="primary">
                 Pay now
-              </Link>
+              </BookingActionLink>
             ) : null}
             {booking.status === "confirmed" ? (
-              <Link
-                href={`/bookings/${booking.id}`}
-                className="rounded-md border border-card-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-card"
-              >
+              <BookingActionLink href={`/bookings/${booking.id}`} variant="outline">
                 View ticket
-              </Link>
+              </BookingActionLink>
             ) : null}
             {booking.status === "cancelled" ? (
-              <Link
-                href={`/trips/${booking.tripId}`}
-                className="rounded-md border border-card-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-card"
-              >
+              <BookingActionLink href={`/trips/${booking.tripId}`} variant="outline">
                 Rebook
-              </Link>
+              </BookingActionLink>
             ) : boarded ? null : (
               <CancelBookingButton bookingId={booking.id} />
             )}

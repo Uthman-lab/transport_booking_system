@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { bulkInviteAction, type BulkInviteState } from "@/app/admin/users/actions";
+import { ActionButton } from "@/components/ui/action-button";
 
 const initialState: BulkInviteState = { status: "idle" };
 
@@ -113,9 +114,14 @@ export function BulkInviteForm({ configured }: { configured: boolean }) {
         className="text-sm file:mr-3 file:rounded-md file:border file:border-card-border file:bg-background file:px-3 file:py-1.5 file:text-sm file:font-medium"
       />
 
-      <button type="submit" disabled={pending || !configured} className={buttonClass}>
-        {pending ? "Validating…" : "Validate & upload"}
-      </button>
+      <ActionButton
+        pending={pending}
+        pendingText="Validating…"
+        disabled={!configured}
+        className={buttonClass}
+      >
+        Validate & upload
+      </ActionButton>
 
       {/* Validation failed — nothing created */}
       {state.status === "invalid" ? (

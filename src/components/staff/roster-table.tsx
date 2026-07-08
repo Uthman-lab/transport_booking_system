@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { boardAction, type BoardState } from "@/app/staff/trips/[id]/actions";
+import { ActionButton } from "@/components/ui/action-button";
 import { isBoarded, type RosterEntry } from "@/domain/roster/roster.entity";
 
 const initialState: BoardState = { status: "idle" };
@@ -75,13 +76,15 @@ function RosterRow({ tripId, entry }: { tripId: string; entry: RosterEntry }) {
           <form action={formAction} className="flex flex-wrap items-center gap-2">
             <input type="hidden" name="ticketCode" value={entry.ticketCode} />
             <input type="hidden" name="tripId" value={tripId} />
-            <button
-              type="submit"
-              disabled={pending}
-              className="rounded-md border border-card-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-background disabled:opacity-60"
+            <ActionButton
+              pending={pending}
+              pendingText="Checking in…"
+              variant="outline"
+              size="sm"
+              className="rounded-md"
             >
-              {pending ? "Checking in…" : "Check in"}
-            </button>
+              Check in
+            </ActionButton>
             {state.status === "error" && state.message ? (
               <span role="alert" className="text-xs text-red-600 dark:text-red-400">
                 {state.message}

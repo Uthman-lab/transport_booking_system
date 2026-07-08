@@ -7,6 +7,7 @@ import {
   type BookingActionState,
 } from "@/app/bookings/[id]/actions";
 import { HoldCountdown } from "@/components/bookings/hold-countdown";
+import { SubmitButton } from "@/components/ui/submit-button";
 
 const initialState: BookingActionState = { status: "idle" };
 
@@ -24,11 +25,11 @@ export function PaymentPanel({
   amountGhs: number;
   holdExpiresAt: Date;
 }) {
-  const [confirmState, confirmFormAction, confirming] = useActionState(
+  const [confirmState, confirmFormAction] = useActionState(
     confirmBookingAction,
     initialState,
   );
-  const [cancelState, cancelFormAction, cancelling] = useActionState(
+  const [cancelState, cancelFormAction] = useActionState(
     cancelBookingAction,
     initialState,
   );
@@ -58,24 +59,23 @@ export function PaymentPanel({
       <div className="flex flex-wrap gap-3">
         <form action={confirmFormAction}>
           <input type="hidden" name="bookingId" value={bookingId} />
-          <button
-            type="submit"
-            disabled={confirming}
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
+          <SubmitButton
+            pendingText="Processing payment…"
+            className="rounded-md"
           >
-            {confirming ? "Processing payment…" : `Pay GHS ${amountGhs.toFixed(2)} with mobile money`}
-          </button>
+            Pay GHS {amountGhs.toFixed(2)} with mobile money
+          </SubmitButton>
         </form>
 
         <form action={cancelFormAction}>
           <input type="hidden" name="bookingId" value={bookingId} />
-          <button
-            type="submit"
-            disabled={cancelling}
-            className="rounded-md border border-card-border px-4 py-2 text-sm font-medium transition-colors hover:bg-card disabled:opacity-60"
+          <SubmitButton
+            variant="outline"
+            pendingText="Cancelling…"
+            className="rounded-md"
           >
-            {cancelling ? "Cancelling…" : "Cancel"}
-          </button>
+            Cancel
+          </SubmitButton>
         </form>
       </div>
     </div>

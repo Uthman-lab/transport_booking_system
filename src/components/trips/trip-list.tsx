@@ -1,8 +1,6 @@
 import Link from "next/link";
-import { DestinationMedia } from "@/components/graphics/destination-media";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { availableSeats, type Trip } from "@/domain/trip/trip.entity";
+import { TripCardLink } from "@/components/trips/trip-card-link";
+import type { Trip } from "@/domain/trip/trip.entity";
 
 // Presentational component: renders domain data only. It never imports
 // Supabase, calls a use case, or knows how `trips` was fetched.
@@ -13,48 +11,11 @@ export function TripList({ trips }: { trips: Trip[] }) {
 
   return (
     <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {trips.map((trip) => {
-        const seats = availableSeats(trip);
-        const scarce = seats <= 3;
-        return (
+      {trips.map((trip) => (
           <li key={trip.id}>
-            <Link href={`/trips/${trip.id}`} className="block h-full">
-              <Card interactive className="flex h-full flex-col overflow-hidden">
-                {/* Destination imagery with the route overlaid. */}
-                <div className="relative h-36">
-                  <DestinationMedia destination={trip.destination} />
-                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-3">
-                    <p className="text-sm font-semibold text-white drop-shadow">
-                      {trip.origin} → {trip.destination}
-                    </p>
-                    <Badge tone="gold">GHS {trip.priceGhs.toFixed(2)}</Badge>
-                  </div>
-                </div>
-
-                <div className="flex flex-1 flex-col gap-3 p-4">
-                  <p className="text-sm text-muted">
-                    {trip.departureAt.toLocaleString(undefined, {
-                      weekday: "short",
-                      day: "numeric",
-                      month: "short",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                  <div className="mt-auto flex items-center justify-between">
-                    <Badge tone={scarce ? "maroon" : "green"}>
-                      {seats} {seats === 1 ? "seat" : "seats"} left
-                    </Badge>
-                    <span className="text-sm font-medium text-primary">
-                      Book now →
-                    </span>
-                  </div>
-                </div>
-              </Card>
-            </Link>
+            <TripCardLink trip={trip} />
           </li>
-        );
-      })}
+        ))}
     </ul>
   );
 }

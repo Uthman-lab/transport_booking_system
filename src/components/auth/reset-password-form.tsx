@@ -5,6 +5,7 @@ import {
   resetPasswordAction,
   type ResetPasswordActionState,
 } from "@/app/reset-password/actions";
+import { ActionButton } from "@/components/ui/action-button";
 
 const initialState: ResetPasswordActionState = { status: "idle" };
 
@@ -54,13 +55,9 @@ export function ResetPasswordForm() {
         </p>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
-      >
-        {pending ? "Updating…" : "Update password"}
-      </button>
+      <ActionButton pending={pending} pendingText="Updating…" className="rounded-md">
+        Update password
+      </ActionButton>
     </form>
   );
 }

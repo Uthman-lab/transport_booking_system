@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { signInAction, type SignInActionState } from "@/app/login/actions";
+import { ActionButton } from "@/components/ui/action-button";
 
 const initialState: SignInActionState = { status: "idle" };
 
@@ -49,13 +50,9 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
         </p>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
-      >
-        {pending ? "Signing in…" : "Sign in"}
-      </button>
+      <ActionButton pending={pending} pendingText="Signing in…" className="rounded-md">
+        Sign in
+      </ActionButton>
 
       <div className="flex flex-col gap-1 text-sm text-muted">
         <Link href="/forgot-password" className="font-medium text-link underline">

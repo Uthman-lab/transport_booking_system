@@ -3,6 +3,7 @@
 import { startTransition, useActionState, useCallback, useEffect, useRef, useState } from "react";
 import jsQR from "jsqr";
 import { checkInAction, type CheckInState } from "@/app/staff/check-in/actions";
+import { ActionButton } from "@/components/ui/action-button";
 
 const initialState: CheckInState = { status: "idle" };
 
@@ -166,9 +167,9 @@ export function CheckInScanner() {
               placeholder="e.g. a1b2c3d4e5f6"
             />
           </label>
-          <button type="submit" disabled={pending} className={buttonClass}>
-            {pending ? "Checking…" : "Check in"}
-          </button>
+          <ActionButton pending={pending} pendingText="Checking…" className={buttonClass}>
+            Check in
+          </ActionButton>
         </div>
       </form>
 

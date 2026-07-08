@@ -5,6 +5,7 @@ import { useActionState } from "react";
 import type { TripFormState } from "@/app/admin/trips/actions";
 import type { Route } from "@/domain/route/route.entity";
 import type { Trip } from "@/domain/trip/trip.entity";
+import { ActionButton } from "@/components/ui/action-button";
 
 const initialState: TripFormState = { status: "idle" };
 
@@ -104,13 +105,9 @@ export function TripForm({
       ) : null}
 
       <div className="flex items-center gap-3">
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover disabled:opacity-60"
-        >
-          {pending ? "Saving…" : submitLabel}
-        </button>
+        <ActionButton pending={pending} pendingText="Saving…" className="rounded-md">
+          {submitLabel}
+        </ActionButton>
         <Link href="/admin/trips" className="text-sm text-link hover:underline">
           Cancel
         </Link>

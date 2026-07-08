@@ -13,6 +13,21 @@ const PUBLIC_PATHS = [
 const AUTH_ONLY_PATHS = ["/login", "/register"];
 
 export async function updateSession(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Supabase may fall back to site_url (root) when redirectTo isn't allow-listed,
+  // leaving a PKCE ?code= on /. Forward it to /auth/confirm so the user can
+  // finish password reset (or other recovery flows) instead of dead-ending.
+  const code = request.nextUrl.searchParams.get("code");
+  if (code && !pathname.startsWith("/auth/confirm")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/confirm";
+    url.search = "";
+    url.searchParams.set("code", code);
+    url.searchParams.set("next", "/reset-password");
+    return NextResponse.redirect(url);
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -40,7 +55,6 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
   // "/" is the public landing page — matched exactly so it doesn't turn every
   // route public the way a `startsWith("/")` prefix would.
   const isPublicPath =

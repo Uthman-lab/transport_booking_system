@@ -3,6 +3,7 @@ import Link from "next/link";
 import logoUbbs from "@/assets/logo_ubbs.jpg";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { MobileMenu } from "@/components/layout/mobile-menu";
+import { SiteNavLinks } from "@/components/layout/pending-nav-links";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { buttonClasses } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
@@ -36,27 +37,7 @@ export async function SiteHeader() {
           <>
             {/* Desktop nav */}
             <nav className="hidden items-center gap-5 text-sm md:flex">
-              <Link href="/trips" className="font-medium text-muted transition-colors hover:text-foreground">
-                Trips
-              </Link>
-              <Link href="/my-bookings" className="font-medium text-muted transition-colors hover:text-foreground">
-                My bookings
-              </Link>
-              {isStaff(user) ? (
-                <>
-                  <Link href="/staff/trips" className="font-medium text-muted transition-colors hover:text-foreground">
-                    Boarding
-                  </Link>
-                  <Link href="/staff/check-in" className="font-medium text-muted transition-colors hover:text-foreground">
-                    Scan
-                  </Link>
-                </>
-              ) : null}
-              {isAdmin(user) ? (
-                <Link href="/admin/trips" className="font-medium text-muted transition-colors hover:text-foreground">
-                  Admin
-                </Link>
-              ) : null}
+              <SiteNavLinks admin={isAdmin(user)} staff={isStaff(user)} />
               <span className="text-muted">{user.fullName}</span>
               <SignOutButton />
               <ThemeToggle />
