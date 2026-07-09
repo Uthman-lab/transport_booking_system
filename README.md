@@ -69,6 +69,19 @@ append `?code=` to the app root instead of `/auth/confirm`. The app proxy
 forwards stray `?code=` params to `/auth/confirm` as a safety net, but fixing
 the env + Dashboard settings is the proper fix.
 
+3. **Supabase Dashboard** → Authentication → Emails → Templates → **Reset Password**
+   — replace the default `{{ .ConfirmationURL }}` link (PKCE `?code=`, requires
+   the same browser that requested the reset) with a direct `token_hash` link
+   that works in any browser:
+
+   ```html
+   <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/reset-password">Reset password</a>
+   ```
+
+   Set **Site URL** (Authentication → URL Configuration) to your public app URL.
+   The link goes straight to `/auth/confirm`; the Continue button still protects
+   the one-time token from email scanners.
+
 ## Scripts
 
 | Command | Description |

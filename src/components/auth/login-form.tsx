@@ -7,7 +7,13 @@ import { ActionButton } from "@/components/ui/action-button";
 
 const initialState: SignInActionState = { status: "idle" };
 
-export function LoginForm({ redirectTo }: { redirectTo?: string }) {
+export function LoginForm({
+  redirectTo,
+  error,
+}: {
+  redirectTo?: string;
+  error?: string;
+}) {
   const [state, formAction, pending] = useActionState(signInAction, initialState);
 
   return (
@@ -21,6 +27,12 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
       </div>
 
       {redirectTo ? <input type="hidden" name="redirectTo" value={redirectTo} /> : null}
+
+      {error ? (
+        <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+          {error}
+        </p>
+      ) : null}
 
       <label className="flex flex-col gap-1 text-sm font-medium">
         Email

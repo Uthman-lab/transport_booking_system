@@ -28,6 +28,22 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  const tokenHash = request.nextUrl.searchParams.get("token_hash");
+  const type = request.nextUrl.searchParams.get("type");
+  if (tokenHash && type && !pathname.startsWith("/auth/confirm")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/confirm";
+    url.search = "";
+    url.searchParams.set("token_hash", tokenHash);
+    url.searchParams.set("type", type);
+    const next = request.nextUrl.searchParams.get("next");
+    url.searchParams.set(
+      "next",
+      type === "recovery" ? "/reset-password" : (next ?? "/trips"),
+    );
+    return NextResponse.redirect(url);
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(

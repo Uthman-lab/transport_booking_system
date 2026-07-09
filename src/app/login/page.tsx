@@ -7,7 +7,7 @@ import { getCurrentUser } from "@/use-cases/auth/get-current-user";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ redirectTo?: string }>;
+  searchParams: Promise<{ redirectTo?: string; error?: string }>;
 }) {
   const supabase = await createClient();
   const user = await getCurrentUser({
@@ -17,11 +17,11 @@ export default async function LoginPage({
   // Defense in depth alongside the proxy's inverse guard.
   if (user) redirect("/trips");
 
-  const { redirectTo } = await searchParams;
+  const { redirectTo, error } = await searchParams;
 
   return (
     <main className="flex flex-1 items-center justify-center px-6 py-12">
-      <LoginForm redirectTo={redirectTo} />
+      <LoginForm redirectTo={redirectTo} error={error} />
     </main>
   );
 }

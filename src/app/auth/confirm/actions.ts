@@ -4,6 +4,13 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import { createClient } from "@/data/supabase/server";
 
+function friendlyConfirmError(message: string): string {
+  if (message.includes("PKCE code verifier not found")) {
+    return "Open the reset link in the same browser you requested it from, or request a new link.";
+  }
+  return message;
+}
+
 // Verifies the email link's token ONLY when the user submits the confirm form
 // (a real click). Preview/scanner bots that merely GET /auth/confirm never
 // reach this, so they can't consume the one-time token. Handles both the
@@ -31,5 +38,5 @@ export async function confirmAction(formData: FormData): Promise<void> {
 
   // redirect() throws NEXT_REDIRECT, so a successful verify above never reaches
   // here; only genuine failures do.
-  redirect(`/login?error=${encodeURIComponent(reason)}`);
+  redirect(`/login?error=${encodeURIComponent(friendlyConfirmError(reason))}`);
 }
