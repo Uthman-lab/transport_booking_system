@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { UserRole } from "@/domain/auth/auth-user.entity";
 import type {
   InviteByEmailInput,
   InvitedUser,
@@ -33,6 +34,21 @@ export class SupabaseInviteRepository implements InviteRepository {
       next: "/reset-password",
     });
     return `${this.siteUrl}/auth/confirm?${params.toString()}`;
+  }
+
+  private async trySendInviteEmail(input: {
+    to: string;
+    fullName: string;
+    link: string;
+    role: UserRole;
+  }): Promise<boolean> {
+    try {
+      await sendInviteEmail(input);
+      return true;
+    } catch (cause) {
+      console.error("invite email send failed", cause);
+      return false;
+    }
   }
 
   async inviteByEmail(input: InviteByEmailInput): Promise<InvitedUser> {
@@ -74,15 +90,12 @@ export class SupabaseInviteRepository implements InviteRepository {
     const actionLink = this.buildLink(hashedToken);
     const email = user.email ?? input.email;
 
-    // Best-effort: email the same link so it also lands in the invitee's inbox.
-    // If SMTP isn't configured or the send fails, the admin still has the link.
-    let emailed = false;
-    try {
-      await sendInviteEmail({ to: email, fullName: input.fullName, link: actionLink, role: input.role });
-      emailed = true;
-    } catch (cause) {
-      console.error("invite email send failed", cause);
-    }
+    const emailed = await this.trySendInviteEmail({
+      to: email,
+      fullName: input.fullName,
+      link: actionLink,
+      role: input.role,
+    });
 
     return { id: user.id, email, role: input.role, actionLink, emailed };
   }
@@ -148,6 +161,23 @@ export class SupabaseInviteRepository implements InviteRepository {
     const hashedToken = data.properties?.hashed_token;
     if (!hashedToken) throw new Error("Invite link was not generated.");
 
-    return { email: user.email, actionLink: this.buildLink(hashedToken) };
+    const { data: profile } = await this.admin
+      .from("profiles")
+      .select("full_name, role")
+      .eq("id", userId)
+      .maybeSingle();
+
+    const actionLink = this.buildLink(hashedToken);
+    const fullName = profile?.full_name ?? user.email;
+    const role = (profile?.role ?? "student") as UserRole;
+
+    const emailed = await this.trySendInviteEmail({
+      to: user.email,
+      fullName,
+      link: actionLink,
+      role,
+    });
+
+    return { email: user.email, actionLink, emailed };
   }
 }

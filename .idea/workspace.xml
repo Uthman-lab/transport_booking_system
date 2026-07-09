@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e6367996-abbd-46bd-b7c0-2f8d6ad5c7de" name="Changes" comment="feat: add `created_at` ordering for trips and routes queries &#10;&#10;- Updated `supabase-trip.repository` and `supabase-route.repository` to sort results by `created_at` in descending order before other criteria.">
+    <list default="true" id="e6367996-abbd-46bd-b7c0-2f8d6ad5c7de" name="Changes" comment="feat(email): add server-side SMTP invite email support&#10;&#10;- Implemented `sendInviteEmail` in `mailer.ts` for sending invite links via SMTP.&#10;- Integrated email sending in `supabase-invite.repository` with best-effort delivery.&#10;- Updated admin UI and actions to reflect when invite emails are sent or require manual sharing.&#10;- Added `nodemailer` and `@types/nodemailer` dependencies for email functionality.&#10;- Enhanced error messaging for token verification in `/auth/confirm`.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/admin/users/actions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/admin/users/actions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/auth/confirm/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/auth/confirm/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/admin/user-list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/admin/user-list.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/repositories/supabase-invite.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/repositories/supabase-invite.repository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/user/invite.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/user/invite.repository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,10 +24,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -62,35 +56,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "copilot.chat.legacySessionMetadata.migrated": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
-    "js.debugger.nextJs.config.created.client": "true",
-    "js.debugger.nextJs.config.created.server": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/amalitech-pc-593/Documents/projects/personal/suala/ubbs-web/src/assets",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.Next.js: server-side.executor": "Debug",
-    "show.migrate.to.gradle.popup": "false",
-    "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/amalitech-pc-593/Documents/projects/personal/suala/ubbs-web/src/assets&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.Next.js: server-side.executor&quot;: &quot;Debug&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/assets" />
@@ -127,7 +121,8 @@
       <option name="presentableId" value="Default" />
       <updated>1783172984907</updated>
       <workItem from="1783172986293" duration="1599000" />
-      <workItem from="1783174768526" duration="37517000" />
+      <workItem from="1783174768526" duration="40295000" />
+      <workItem from="1783441341880" duration="878000" />
     </task>
     <task id="LOCAL-00001" summary="fix: resolve RLS recursion issue, improve email confirmation flow&#10;&#10;- Fixed infinite recursion in RLS policies by introducing `current_user_role()` as a `SECURITY DEFINER` function to avoid self-referential queries.&#10;- Moved `current_user_role()` to an internal schema to restrict API exposure.&#10;- Updated RLS policies to reference the internal role helper.&#10;- Enabled email confirmation in Supabase config to align with updated authentication flow.&#10;- Enhanced user registration feedback and adjusted related repository and use-case logic for email confirmation handling.">
       <option name="closed" value="true" />
@@ -265,7 +260,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783246825691</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="feat(email): add server-side SMTP invite email support&#10;&#10;- Implemented `sendInviteEmail` in `mailer.ts` for sending invite links via SMTP.&#10;- Integrated email sending in `supabase-invite.repository` with best-effort delivery.&#10;- Updated admin UI and actions to reflect when invite emails are sent or require manual sharing.&#10;- Added `nodemailer` and `@types/nodemailer` dependencies for email functionality.&#10;- Enhanced error messaging for token verification in `/auth/confirm`.">
+      <option name="closed" value="true" />
+      <created>1783269828914</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1783269828915</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -293,6 +296,7 @@
     <MESSAGE value="feat: enhance mobile and staff navigation, improve QR handling&#10;&#10;- Updated `MobileMenu` and `SiteHeader` to include a new &quot;Boarding&quot; link for staff navigation. &#10;- Added proper transitions in `CheckInScanner` to handle programmatic `dispatch` calls cleanly. &#10;- Adjusted `.gitignore` to exclude certificates for better environment management." />
     <MESSAGE value="feat: add admin dashboard analytics and bulk invite support&#10;&#10;- Added `get_admin_dashboard` SQL function for admin-only revenue, demand, and occupancy analytics.&#10;- Introduced a new admin dashboard UI for visualizing trip performance, route metrics, and 14-day trends.&#10;- Implemented an all-or-nothing bulk invite system for uploading and validating .csv/.xlsx files.&#10;- Enhanced invite validation with detailed error reporting and template file generation.&#10;- Included `xlsx` package for spreadsheet processing." />
     <MESSAGE value="feat: add `created_at` ordering for trips and routes queries &#10;&#10;- Updated `supabase-trip.repository` and `supabase-route.repository` to sort results by `created_at` in descending order before other criteria." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add `created_at` ordering for trips and routes queries &#10;&#10;- Updated `supabase-trip.repository` and `supabase-route.repository` to sort results by `created_at` in descending order before other criteria." />
+    <MESSAGE value="feat(email): add server-side SMTP invite email support&#10;&#10;- Implemented `sendInviteEmail` in `mailer.ts` for sending invite links via SMTP.&#10;- Integrated email sending in `supabase-invite.repository` with best-effort delivery.&#10;- Updated admin UI and actions to reflect when invite emails are sent or require manual sharing.&#10;- Added `nodemailer` and `@types/nodemailer` dependencies for email functionality.&#10;- Enhanced error messaging for token verification in `/auth/confirm`." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(email): add server-side SMTP invite email support&#10;&#10;- Implemented `sendInviteEmail` in `mailer.ts` for sending invite links via SMTP.&#10;- Integrated email sending in `supabase-invite.repository` with best-effort delivery.&#10;- Updated admin UI and actions to reflect when invite emails are sent or require manual sharing.&#10;- Added `nodemailer` and `@types/nodemailer` dependencies for email functionality.&#10;- Enhanced error messaging for token verification in `/auth/confirm`." />
   </component>
 </project>

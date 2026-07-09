@@ -6,11 +6,9 @@ import {
   type ResetPasswordActionState,
 } from "@/app/reset-password/actions";
 import { ActionButton } from "@/components/ui/action-button";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const initialState: ResetPasswordActionState = { status: "idle" };
-
-const fieldClass =
-  "rounded-md border border-input bg-input-bg px-3 py-2 text-base font-normal outline-none focus:border-ring";
 
 export function ResetPasswordForm() {
   const [state, formAction, pending] = useActionState(resetPasswordAction, initialState);
@@ -27,26 +25,12 @@ export function ResetPasswordForm() {
 
       <label className="flex flex-col gap-1 text-sm font-medium">
         New password
-        <input
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          minLength={6}
-          required
-          className={fieldClass}
-        />
+        <PasswordInput name="password" autoComplete="new-password" minLength={6} required />
       </label>
 
       <label className="flex flex-col gap-1 text-sm font-medium">
         Confirm password
-        <input
-          name="confirmPassword"
-          type="password"
-          autoComplete="new-password"
-          minLength={6}
-          required
-          className={fieldClass}
-        />
+        <PasswordInput name="confirmPassword" autoComplete="new-password" minLength={6} required />
       </label>
 
       {state.status === "error" && state.message ? (

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { signInAction, type SignInActionState } from "@/app/login/actions";
 import { ActionButton } from "@/components/ui/action-button";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const initialState: SignInActionState = { status: "idle" };
 
@@ -47,13 +48,7 @@ export function LoginForm({
 
       <label className="flex flex-col gap-1 text-sm font-medium">
         Password
-        <input
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          className="rounded-md border border-input bg-input-bg px-3 py-2 text-base font-normal outline-none focus:border-ring"
-        />
+        <PasswordInput name="password" autoComplete="current-password" required />
       </label>
 
       {state.status === "error" && state.message ? (

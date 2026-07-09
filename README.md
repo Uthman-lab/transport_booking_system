@@ -82,6 +82,22 @@ the env + Dashboard settings is the proper fix.
    The link goes straight to `/auth/confirm`; the Continue button still protects
    the one-time token from email scanners.
 
+### Invite emails (production)
+
+User invites are emailed by the **app** via Nodemailer ([src/data/email/mailer.ts](src/data/email/mailer.ts)), not Supabase's built-in mailer. Password-reset emails use Supabase SMTP; invite emails need separate `SMTP_*` env vars.
+
+1. **Vercel** → project → Settings → Environment Variables — add (reuse the same Brevo credentials as Supabase Dashboard SMTP):
+   - `SMTP_HOST` = `smtp-relay.brevo.com`
+   - `SMTP_PORT` = `587`
+   - `SMTP_USER` = your Brevo login email
+   - `SMTP_PASS` = your Brevo SMTP key
+   - `SMTP_FROM` = your verified sender email
+   - `SMTP_FROM_NAME` = `UBBS` (optional)
+2. **Redeploy** after adding env vars (changes don't apply until a new deployment).
+3. **Local dev** — copy the same values into `.env.local` if you want invite emails when running `npm run dev`.
+
+Without `SMTP_*`, invites still work: the admin UI shows a copyable link and a warning that email isn't configured.
+
 ## Scripts
 
 | Command | Description |

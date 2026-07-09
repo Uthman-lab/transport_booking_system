@@ -1,8 +1,11 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { isNavLinkActive } from "@/components/layout/pending-nav-links";
 import { PendingLink } from "@/components/ui/pending-link";
+import { cn } from "@/components/ui/utils";
 
 // Hamburger menu for the signed-in nav on small screens. The desktop nav lives
 // in SiteHeader and is hidden below `md`; this takes over there.
@@ -78,12 +81,21 @@ function MobileLink({
   onClick: () => void;
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const active = isNavLinkActive(pathname, href);
+
   return (
     <PendingLink
       href={href}
       showSpinner={false}
       onNavigate={onClick}
-      className="block rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent"
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "block rounded-md px-3 py-2 text-sm font-medium transition-colors",
+        active
+          ? "bg-primary text-primary-foreground"
+          : "hover:bg-accent",
+      )}
     >
       {children}
     </PendingLink>

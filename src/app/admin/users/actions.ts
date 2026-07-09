@@ -225,7 +225,9 @@ export async function resendInviteAction(
   revalidatePath("/admin/users");
   return {
     status: "success",
-    message: `Fresh invite link for ${result.value.email}:`,
+    message: result.value.emailed
+      ? `Invitation emailed to ${result.value.email}. The link is below too — copy it if you'd rather send it yourself.`
+      : `Fresh invite link for ${result.value.email}. Email isn't configured, so copy the link below and send it to them.`,
     link: result.value.actionLink,
   };
 }

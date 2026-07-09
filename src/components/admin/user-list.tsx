@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useActionState } from "react";
 import { BulkInviteForm } from "@/components/admin/bulk-invite-form";
+import { SmtpNotice } from "@/components/admin/smtp-notice";
 import {
   changeUserRoleAction,
   deleteUserAction,
@@ -54,17 +55,19 @@ export function UserList({
   users,
   currentUserId,
   inviteConfigured,
+  mailerConfigured,
 }: {
   users: ManagedUser[];
   currentUserId: string;
   inviteConfigured: boolean;
+  mailerConfigured: boolean;
 }) {
   const byId = new Map(users.map((u) => [u.id, u]));
 
   return (
     <div className="mt-6 flex flex-col gap-8">
-      <InviteUserForm configured={inviteConfigured} />
-      <BulkInviteForm configured={inviteConfigured} />
+      <InviteUserForm configured={inviteConfigured} mailerConfigured={mailerConfigured} />
+      <BulkInviteForm configured={inviteConfigured} mailerConfigured={mailerConfigured} />
 
       {users.length === 0 ? (
         <p className="text-muted">No users yet.</p>
@@ -294,7 +297,14 @@ function ResendControl({ user }: { user: ManagedUser }) {
           {state.message}
         </span>
       ) : null}
-      {state.status === "success" && state.link ? <CopyLink link={state.link} /> : null}
+      {state.status === "success" && state.message ? (
+        <div className="flex flex-col gap-2">
+          <p role="status" className="text-xs font-medium text-green-700 dark:text-green-400">
+            {state.message}
+          </p>
+          {state.link ? <CopyLink link={state.link} /> : null}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -374,7 +384,13 @@ function CopyLink({ link }: { link: string }) {
   );
 }
 
-function InviteUserForm({ configured }: { configured: boolean }) {
+function InviteUserForm({
+  configured,
+  mailerConfigured,
+}: {
+  configured: boolean;
+  mailerConfigured: boolean;
+}) {
   const [state, formAction, pending] = useActionState(inviteUserAction, initialState);
 
   return (
@@ -397,6 +413,8 @@ function InviteUserForm({ configured }: { configured: boolean }) {
           on the server. You can still change a user&apos;s role in the table below.
         </p>
       ) : null}
+
+      {configured ? <SmtpNotice configured={mailerConfigured} /> : null}
 
       <div className="flex flex-wrap gap-3">
         <label className="flex flex-1 flex-col gap-1 text-sm font-medium">

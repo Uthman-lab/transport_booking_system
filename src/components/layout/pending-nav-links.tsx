@@ -1,10 +1,41 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { PendingLink } from "@/components/ui/pending-link";
 import { cn } from "@/components/ui/utils";
 
-const navLinkClass =
-  "font-medium text-muted transition-colors hover:text-foreground";
+// The Admin link covers every /admin page; staff links cover their subtrees.
+export function isNavLinkActive(pathname: string, href: string): boolean {
+  if (href === "/admin/trips") return pathname.startsWith("/admin");
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function SiteNavLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const active = isNavLinkActive(pathname, href);
+
+  return (
+    <PendingLink
+      href={href}
+      showSpinner={false}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "font-medium transition-colors",
+        active
+          ? "text-primary underline decoration-2 underline-offset-8"
+          : "text-muted hover:text-foreground",
+      )}
+    >
+      {children}
+    </PendingLink>
+  );
+}
 
 export function SiteNavLinks({
   admin,
@@ -15,27 +46,15 @@ export function SiteNavLinks({
 }) {
   return (
     <>
-      <PendingLink href="/trips" showSpinner={false} className={navLinkClass}>
-        Trips
-      </PendingLink>
-      <PendingLink href="/my-bookings" showSpinner={false} className={navLinkClass}>
-        My bookings
-      </PendingLink>
+      <SiteNavLink href="/trips">Trips</SiteNavLink>
+      <SiteNavLink href="/my-bookings">My bookings</SiteNavLink>
       {staff ? (
         <>
-          <PendingLink href="/staff/trips" showSpinner={false} className={navLinkClass}>
-            Boarding
-          </PendingLink>
-          <PendingLink href="/staff/check-in" showSpinner={false} className={navLinkClass}>
-            Scan
-          </PendingLink>
+          <SiteNavLink href="/staff/trips">Boarding</SiteNavLink>
+          <SiteNavLink href="/staff/check-in">Scan</SiteNavLink>
         </>
       ) : null}
-      {admin ? (
-        <PendingLink href="/admin/trips" showSpinner={false} className={navLinkClass}>
-          Admin
-        </PendingLink>
-      ) : null}
+      {admin ? <SiteNavLink href="/admin/trips">Admin</SiteNavLink> : null}
     </>
   );
 }

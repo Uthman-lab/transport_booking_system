@@ -1,4 +1,5 @@
 import { UserList } from "@/components/admin/user-list";
+import { isMailerConfigured } from "@/data/email/mailer";
 import { createAdminClient, isAdminClientConfigured } from "@/data/supabase/admin";
 import { SupabaseAuthRepository } from "@/data/repositories/supabase-auth.repository";
 import { SupabaseInviteRepository } from "@/data/repositories/supabase-invite.repository";
@@ -15,6 +16,7 @@ function siteUrl(): string {
 export default async function AdminUsersPage() {
   const supabase = await createClient();
   const inviteConfigured = isAdminClientConfigured();
+  const mailerConfigured = isMailerConfigured();
 
   const [currentUser, users, inviteStates] = await Promise.all([
     getCurrentUser({ authRepository: new SupabaseAuthRepository(supabase) }),
@@ -49,6 +51,7 @@ export default async function AdminUsersPage() {
         users={enriched}
         currentUserId={currentUser?.id ?? ""}
         inviteConfigured={inviteConfigured}
+        mailerConfigured={mailerConfigured}
       />
     </section>
   );

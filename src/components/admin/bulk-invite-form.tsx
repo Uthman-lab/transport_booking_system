@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { bulkInviteAction, type BulkInviteState } from "@/app/admin/users/actions";
+import { SmtpNotice } from "@/components/admin/smtp-notice";
 import { ActionButton } from "@/components/ui/action-button";
 
 const initialState: BulkInviteState = { status: "idle" };
@@ -37,7 +38,13 @@ function downloadFile(filename: string, content: string) {
   URL.revokeObjectURL(url);
 }
 
-export function BulkInviteForm({ configured }: { configured: boolean }) {
+export function BulkInviteForm({
+  configured,
+  mailerConfigured,
+}: {
+  configured: boolean;
+  mailerConfigured: boolean;
+}) {
   const [state, formAction, pending] = useActionState(bulkInviteAction, initialState);
 
   return (
@@ -104,6 +111,8 @@ export function BulkInviteForm({ configured }: { configured: boolean }) {
           on the server.
         </p>
       ) : null}
+
+      {configured ? <SmtpNotice configured={mailerConfigured} /> : null}
 
       <input
         type="file"

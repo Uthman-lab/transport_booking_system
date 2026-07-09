@@ -58,6 +58,7 @@ export type InviteState = {
 export type ResendResult = {
   email: string;
   actionLink: string;
+  emailed: boolean;
 };
 
 export interface InviteRepository {
