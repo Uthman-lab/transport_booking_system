@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createAdminClient, isAdminClientConfigured } from "@/data/supabase/admin";
+import { isMailerConfigured } from "@/data/email/mailer";
 import { SupabaseAuthRepository } from "@/data/repositories/supabase-auth.repository";
 import { SupabaseInviteRepository } from "@/data/repositories/supabase-invite.repository";
 import { SupabaseUserRepository } from "@/data/repositories/supabase-user.repository";
@@ -47,6 +48,18 @@ async function requireAdmin(): Promise<{
 
 function siteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+}
+
+// Explains why an invite wasn't emailed: SMTP genuinely isn't configured, or a
+// send was attempted and failed (surface the real reason so it's fixable).
+function notEmailedReason(emailError?: string): string {
+  if (emailError) {
+    return `the email failed to send (${emailError})`;
+  }
+  if (!isMailerConfigured()) {
+    return "email isn't configured on the server";
+  }
+  return "the email couldn't be sent";
 }
 
 const changeRoleSchema = z.object({
@@ -197,7 +210,7 @@ export async function inviteUserAction(
     status: "success",
     message: result.value.emailed
       ? `Invitation emailed to ${result.value.email} (${result.value.role}). The link is below too — copy it if you'd rather send it yourself.`
-      : `Invite ready for ${result.value.email} (${result.value.role}). Email isn't configured, so copy the link below and send it to them.`,
+      : `Invite ready for ${result.value.email} (${result.value.role}), but ${notEmailedReason(result.value.emailError)}. Copy the link below and send it to them.`,
     link: result.value.actionLink,
   };
 }
@@ -227,7 +240,7 @@ export async function resendInviteAction(
     status: "success",
     message: result.value.emailed
       ? `Invitation emailed to ${result.value.email}. The link is below too — copy it if you'd rather send it yourself.`
-      : `Fresh invite link for ${result.value.email}. Email isn't configured, so copy the link below and send it to them.`,
+      : `Fresh invite link for ${result.value.email}, but ${notEmailedReason(result.value.emailError)}. Copy the link below and send it to them.`,
     link: result.value.actionLink,
   };
 }

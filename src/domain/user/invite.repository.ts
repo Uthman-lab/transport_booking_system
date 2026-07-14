@@ -45,6 +45,10 @@ export type InvitedUser = {
   // Whether the invite email was also sent (best-effort; false if SMTP isn't
   // configured or sending failed — the admin still has actionLink).
   emailed: boolean;
+  // When emailed is false because a send was attempted and threw, this holds the
+  // reason (e.g. Brevo rejecting an unverified sender). Undefined when SMTP is
+  // simply not configured.
+  emailError?: string;
 };
 
 // Per-user invite state, sourced from auth.users.
@@ -59,6 +63,8 @@ export type ResendResult = {
   email: string;
   actionLink: string;
   emailed: boolean;
+  // See InvitedUser.emailError.
+  emailError?: string;
 };
 
 export interface InviteRepository {

@@ -41,13 +41,13 @@ export class SupabaseInviteRepository implements InviteRepository {
     fullName: string;
     link: string;
     role: UserRole;
-  }): Promise<boolean> {
+  }): Promise<{ emailed: boolean; emailError?: string }> {
     try {
       await sendInviteEmail(input);
-      return true;
+      return { emailed: true };
     } catch (cause) {
       console.error("invite email send failed", cause);
-      return false;
+      return { emailed: false, emailError: describeError(cause) };
     }
   }
 
@@ -90,14 +90,14 @@ export class SupabaseInviteRepository implements InviteRepository {
     const actionLink = this.buildLink(hashedToken);
     const email = user.email ?? input.email;
 
-    const emailed = await this.trySendInviteEmail({
+    const { emailed, emailError } = await this.trySendInviteEmail({
       to: email,
       fullName: input.fullName,
       link: actionLink,
       role: input.role,
     });
 
-    return { id: user.id, email, role: input.role, actionLink, emailed };
+    return { id: user.id, email, role: input.role, actionLink, emailed, emailError };
   }
 
   async inviteManyAtomic(inputs: InviteByEmailInput[]): Promise<InvitedUser[]> {
@@ -171,13 +171,19 @@ export class SupabaseInviteRepository implements InviteRepository {
     const fullName = profile?.full_name ?? user.email;
     const role = (profile?.role ?? "student") as UserRole;
 
-    const emailed = await this.trySendInviteEmail({
+    const { emailed, emailError } = await this.trySendInviteEmail({
       to: user.email,
       fullName,
       link: actionLink,
       role,
     });
 
-    return { email: user.email, actionLink, emailed };
+    return { email: user.email, actionLink, emailed, emailError };
   }
+}
+
+function describeError(cause: unknown): string {
+  if (cause instanceof Error) return cause.message;
+  if (typeof cause === "string") return cause;
+  return "Unknown error while sending the email.";
 }
